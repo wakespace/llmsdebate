@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 Sistema de Deliberação Assistida por múltiplos LLMs
 
-## Getting Started
+Bem-vindo ao **LLMs Debate**, uma plataforma interativa de *Raciocínio Multi-Agente* (Multi-Agent Reasoning) construída com Next.js 14, React e Tailwind CSS. 
 
-First, run the development server:
+Este projeto permite que você envie um _prompt_ e observe dezenas de diferentes IAs (Large Language Models) debatendo e refletindo sobre o seu problema em paralelo. O sistema permite rodadas de deliberação consecutivas (onde os modelos leem o que os outros especialistas disseram nas rodadas anteriores e melhoram suas próprias respostas) até convergir para uma síntese estruturada perfeita.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Principais Funcionalidades
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Múltiplos Provedores de API Integrados:** Suporte ativo nativo para **OpenRouter**, **OpenAI**, **Perplexity** e **Google Gemini** em uma única interface.
+- **26 Modelos Especialistas:** Escolha a dedo qual IA vai fazer parte do seu grupo de deliberação. O sistema suporta os melhores raciocinadores do mundo:
+   - *Família Claude 4.5 e 4.6 (Opus, Sonnet, Haiku)*
+   - *Família GPT-5 (High, Codex, Pro, Mini)*
+   - *Família Gemini 3 (Pro e Flash com 1M de Tokens)*
+   - *Modelos Open-Source Asiáticos (DeepSeek, GLM-5, Kimi K2.5, Doubao, ERNIE)*
+   - *Série Perplexity Sonar (Pesquisa web ao vivo)*
+- **Reflexão por Rodadas (Aprofundamento):** Os modelos não respondem apenas uma vez. Você pode iniciar a "Rodada 2", onde o sistema injeta as respostas de todos os especialistas da rodada passada no contexto, forçando-os a repensar suas ideias com base nas críticas uns dos outros.
+- **Transcrição e Síntese Final:** Exporte toda a cadeia de raciocínio da deliberação em formato `.MD` com o clique de um botão.
+- **Modelos Locais Offline:** O sistema consegue varrer automaticamente o seu **LM Studio** na porta `1234` e adicionar modelos locais executando diretos do seu equipamento (ex: Llama 3 70B, Qwen, etc) para participarem das rodadas sem custo de nuvem.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🚀 Como instalar e rodar
 
-To learn more about Next.js, take a look at the following resources:
+1. Clone o repositório em sua máquina:
+   ```bash
+   git clone https://github.com/darlanvsvs/llmsdebate.git
+   cd llmsdebate
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Instale as dependências através do NPM ou do gerenciador de sua preferência:
+   ```bash
+   npm install
+   ```
+
+3. Modifique o nome do arquivo `.env.example` (se houver) para `.env.local` e preencha as suas chaves de API:
+   ```env
+   OPENAI_API_KEY="sua_chave_aqui"
+   OPENROUTER_API_KEY="sua_chave_aqui"
+   GEMINI_API_KEY="sua_chave_aqui"
+   PERPLEXITY_API_KEY="sua_chave_aqui"
+   ```
+
+4. Inicialize o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+
+5. O aplicativo estará rodando em `http://localhost:3000`.
+
+---
+
+## 🛠️ Stack Tecnológica
+
+- **Frontend:** Next.js 14 (App Router), React 18, Zustand (State Management LocalStorage), Tailwind CSS (Glassmorphism UI), Lucide Icons.
+- **Backend:** Rotas de API Edge via Next.js lidando com parse, stream e mapeamento estrito para os 4 provedores diferentes.
+
+---
+
+## 🎨 Sobre a Interface
+
+O design foca em imersão com tons escuros profundos inspirados no universo espacial (efeitos glassmorphism, translucidez com desfoque de cenário `backdrop-blur`). As respostas dos especialistas são fragmentadas automaticamente pelo sistema em duas fases visuais obrigatórias: **Análise** e **Conclusão Final**, facilitando a leitura e comparação instantânea do raciocínio analítico com o veredicto daquele modelo para o usuário final.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
