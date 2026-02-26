@@ -1,0 +1,464 @@
+{
+  "openai": [
+    {
+      "id": "openai/gpt-5.2-high",
+      "name": "GPT-5.2 High",
+      "provider": "openai",
+      "free": false,
+      "description": "Extremamente competente com matemática/lógica universal e top de linha na análise de dados.",
+      "strengths": [
+        "Matemática",
+        "Lógica universal",
+        "Análise de dados"
+      ],
+      "costTier": "caro"
+    },
+    {
+      "id": "openai/gpt-5.2-codex",
+      "name": "GPT-5.2 Codex",
+      "provider": "openai",
+      "free": false,
+      "description": "Liderança absoluta no universo de código e otimização para engenharia de software.",
+      "strengths": [
+        "Universo de código",
+        "Engenharia de software",
+        "Refatoração massiva"
+      ],
+      "costTier": "caro"
+    }
+  ],
+  "gemini": [
+    {
+      "id": "gemini-3-pro-preview-high",
+      "name": "Gemini 3 Pro Preview",
+      "provider": "gemini",
+      "free": false,
+      "description": "Rei inquestionável do contexto longo (1 milhão de tokens) e fluência multimodal invejável.",
+      "strengths": [
+        "Contexto colossal",
+        "Fluência multimodal",
+        "Compreende vídeos e UIs"
+      ],
+      "costTier": "caro"
+    },
+    {
+      "id": "gemini-3-flash-preview-high",
+      "name": "Gemini 3 Flash Preview",
+      "provider": "gemini",
+      "free": true,
+      "description": "Custo excepcional com raciocínio brilhante para seguimento de instruções em janela de 1M tokens.",
+      "strengths": [
+        "Custo excepcional",
+        "Seguimento de instruções",
+        "Processamento rápido"
+      ],
+      "costTier": "grátis"
+    }
+  ],
+  "perplexity": [
+    {
+      "id": "perplexity/sonar-deep-research",
+      "name": "Sonar Deep Research",
+      "provider": "perplexity",
+      "free": false,
+      "description": "O melhor para varreduras exaustivas da web, combinando raciocínio robusto de ponta a ponta.",
+      "strengths": [
+        "Varreduras exaustivas da web",
+        "Buscas ativas com lógica acoplada"
+      ],
+      "costTier": "caro"
+    },
+    {
+      "id": "perplexity/sonar-pro",
+      "name": "Sonar Pro",
+      "provider": "perplexity",
+      "free": false,
+      "description": "Edição voltada a respostas rápidas fundamentadas por links exatos da web.",
+      "strengths": [
+        "Busca veloz com precisão de links",
+        "Alta ancoragem"
+      ],
+      "costTier": "moderado"
+    }
+  ],
+  "openrouter": [
+    {
+      "id": "openrouter/nvidia/nemotron-3-nano-30b-a3b:free",
+      "name": "NVIDIA: Nemotron 3 Nano 30B A3B",
+      "provider": "openrouter",
+      "free": true,
+      "description": "NVIDIA Nemotron 3 Nano 30B A3B é um modelo MoE de linguagem pequena com maior eficiência e precisão computacional para que os desenvolvedores construam sistemas de IA agentes especializados.\n\nO modelo é totalmente aberto com pesos abertos, conjuntos de dados e receitas para que os desenvolvedores possam facilmente\npersonalizar, otimizar e implantar o modelo em sua infraestrutura para máxima privacidade e\nsegurança.\n\nObservação: para o endpoint gratuito, todos os prompts e saídas são registrados para melhorar o modelo do provedor e seus produtos e serviços. Não carregue nenhuma informação pessoal, confidencial ou de outra forma sensível. Este é apenas um uso experimental. Não use para produção ou sistemas críticos para os negócios.",
+      "strengths": [
+        "Agentes/Chamada de função",
+        "MoE"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/nvidia/nemotron-nano-12b-v2-vl:free",
+      "name": "NVIDIA: Nemotron Nano 12B 2 VL",
+      "provider": "openrouter",
+      "free": true,
+      "description": "NVIDIA Nemotron Nano 2 VL é um modelo de raciocínio multimodal aberto de 12 bilhões de parâmetros projetado para compreensão de vídeo e inteligência de documentos. Ele apresenta uma arquitetura híbrida Transformer-Mamba, combinando a precisão do nível do transformador com a modelagem de sequência com eficiência de memória do Mamba para um rendimento significativamente maior e menor latência.\n\nO modelo suporta entradas de documentos de texto e múltiplas imagens, produzindo saídas em linguagem natural. Ele é treinado em conjuntos de dados sintéticos de alta qualidade com curadoria da NVIDIA, otimizados para reconhecimento óptico de caracteres, raciocínio gráfico e compreensão multimodal.\n\nNemotron Nano 2 VL alcança resultados líderes no OCRBench v2 e pontuações ≈ 74 em média em MMMU, MathVista, AI2D, OCRBench, OCR-Reasoning, ChartQA, DocVQA e Video-MME – superando as linhas de base abertas anteriores de VL. Com Efficient Video Sampling (EVS), ele lida com vídeos longos e reduz o custo de inferência.\n\nPesos abertos, dados de treinamento e receitas de ajuste fino são lançados sob uma licença aberta permissiva da NVIDIA, com implantação suportada em NeMo, NIM e nos principais tempos de execução de inferência.",
+      "strengths": [
+        "Matemática",
+        "Multimodal",
+        "Raciocínio Avançado"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/nvidia/nemotron-nano-9b-v2:free",
+      "name": "NVIDIA: Nemotron Nano 9B V2",
+      "provider": "openrouter",
+      "free": true,
+      "description": "NVIDIA-Nemotron-Nano-9B-v2 é um modelo de linguagem grande (LLM) treinado do zero pela NVIDIA e projetado como um modelo unificado para tarefas de raciocínio e não raciocínio. Ele responde às consultas e tarefas do usuário gerando primeiro um rastreamento de raciocínio e depois concluindo com uma resposta final. \n\nAs capacidades de raciocínio do modelo podem ser controladas através de um prompt do sistema. Caso o usuário prefira que o modelo forneça sua resposta final sem traços intermediários de raciocínio, ele poderá ser configurado para fazê-lo.",
+      "strengths": [
+        "Raciocínio Avançado"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/meta-llama/llama-3.3-70b-instruct:free",
+      "name": "Meta: Llama 3.3 70B Instruct",
+      "provider": "openrouter",
+      "free": true,
+      "description": "O modelo multilíngue de linguagem grande (LLM) Meta Llama 3.3 é um modelo generativo pré-treinado e ajustado por instrução em 70B (entrada/saída de texto). O modelo somente texto ajustado com instruções do Llama 3.3 é otimizado para casos de uso de diálogo multilíngue e supera muitos dos modelos de código aberto e chat fechado disponíveis em benchmarks comuns do setor.\n\nIdiomas suportados: inglês, alemão, francês, italiano, português, hindi, espanhol e tailandês.\n\n[Cartão Modelo](https://github.com/meta-llama/llama-models/blob/main/models/llama3_3/MODEL_CARD.md)",
+      "strengths": [
+        "Código"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/nousresearch/hermes-3-llama-3.1-405b:free",
+      "name": "Nous: Hermes 3 405B Instruct",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Hermes 3 é um modelo de linguagem generalista com muitas melhorias em relação ao Hermes 2, incluindo recursos avançados de agência, interpretação, raciocínio muito melhor, conversação em vários turnos, longa coerência de contexto e melhorias gerais.\n\nHermes 3 405B é um ajuste fino de parâmetros completos de nível de fronteira do modelo de base Llama-3.1 405B, focado no alinhamento de LLMs ao usuário, com poderosos recursos de direção e controle fornecidos ao usuário final.\n\nA série Hermes 3 baseia-se e expande o conjunto de recursos do Hermes 2, incluindo chamadas de funções mais poderosas e confiáveis ​​e recursos de saída estruturados, recursos de assistente generalista e habilidades aprimoradas de geração de código.\n\nO Hermes 3 é competitivo, se não superior, aos modelos Llama-3.1 Instruct em capacidades gerais, com vários pontos fortes e fracos atribuíveis entre os dois.",
+      "strengths": [
+        "Código",
+        "Raciocínio Avançado",
+        "Contexto Longo"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/qwen/qwen3-next-80b-a3b-instruct:free",
+      "name": "Qwen: Qwen3 Next 80B A3B Instruct",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Qwen3-Next-80B-A3B-Instruct é um modelo de bate-papo ajustado por instrução da série Qwen3-Next, otimizado para respostas rápidas e estáveis, sem rastros de “pensamento”. Ele tem como alvo tarefas complexas de raciocínio, geração de código, controle de qualidade de conhecimento e uso multilíngue, ao mesmo tempo em que permanece robusto em alinhamento e formatação. Em comparação com variantes de instruções anteriores do Qwen3, ele se concentra em maior rendimento e estabilidade em entradas ultralongas e diálogos multivoltas, tornando-o adequado para RAG, uso de ferramentas e fluxos de trabalho de agente que exigem respostas finais consistentes em vez de cadeia de pensamento visível.\n\nO modelo emprega treinamento e decodificação eficientes em escala para melhorar a eficiência dos parâmetros e a velocidade de inferência, e foi validado em um amplo conjunto de benchmarks públicos onde atinge ou se aproxima de sistemas Qwen3 maiores em diversas categorias, ao mesmo tempo que supera as linhas de base anteriores de médio porte. É melhor usado como assistente geral, auxiliar de código e solucionador de tarefas de contexto longo em configurações de produção onde saídas determinísticas e que seguem instruções são preferidas.",
+      "strengths": [
+        "Código",
+        "Raciocínio Avançado",
+        "Agentes/Chamada de função"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/qwen/qwen3-coder:free",
+      "name": "Qwen: Qwen3 Coder 480B A35B",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Qwen3-Coder-480B-A35B-Instruct é um modelo de geração de código Mixture-of-Experts (MoE) desenvolvido pela equipe Qwen. Ele é otimizado para tarefas de codificação de agente, como chamada de função, uso de ferramentas e raciocínio de longo contexto em repositórios. O modelo apresenta 480 bilhões de parâmetros totais, com 35 bilhões ativos por passagem para frente (8 entre 160 especialistas).\n\nO preço dos endpoints do Alibaba varia de acordo com a duração do contexto. Quando uma solicitação for superior a 128 mil tokens de entrada, o preço mais alto será usado.",
+      "strengths": [
+        "Código",
+        "Raciocínio Avançado",
+        "Agentes/Chamada de função"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/qwen/qwen3-vl-30b-a3b-thinking",
+      "name": "Qwen: Qwen3 VL 30B A3B Thinking",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Qwen3-VL-30B-A3B-Thinking é um modelo multimodal que unifica forte geração de texto com compreensão visual de imagens e vídeos. Sua variante Thinking aprimora o raciocínio em STEM, matemática e tarefas complexas. Ele se destaca na percepção de categorias do mundo real/sintéticas, base espacial 2D/3D e compreensão visual de formato longo, alcançando resultados de benchmark multimodais competitivos. Para uso agente, ele lida com instruções multivoltas de várias imagens, alinhamentos de linha do tempo de vídeo, automação de GUI e codificação visual de esboços até UI depurada. O desempenho do texto corresponde aos principais modelos Qwen3, adequando-se a IA de documentos, OCR, assistência de UI, tarefas espaciais e pesquisa de agentes.",
+      "strengths": [
+        "Código",
+        "Matemática",
+        "Multimodal"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/qwen/qwen3-vl-235b-a22b-thinking",
+      "name": "Qwen: Qwen3 VL 235B A22B Thinking",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Qwen3-VL-235B-A22B Thinking é um modelo multimodal que unifica a forte geração de texto com a compreensão visual de imagens e vídeos. O modelo Thinking é otimizado para raciocínio multimodal em STEM e matemática. A série enfatiza a percepção robusta (reconhecimento de diversas categorias sintéticas e do mundo real), a compreensão espacial (fundamentação 2D/3D) e a compreensão visual de formato longo, com resultados competitivos em benchmarks multimodais públicos para percepção e raciocínio.\n\nAlém da análise, o Qwen3-VL oferece suporte à interação de agentes e ao uso de ferramentas: ele pode seguir instruções complexas em diálogos com várias imagens e turnos; alinhe o texto aos cronogramas do vídeo para consultas temporais precisas; e operar elementos GUI para tarefas de automação. Os modelos também permitem fluxos de trabalho de codificação visual, transformando esboços ou maquetes em código e auxiliando na depuração da IU, ao mesmo tempo em que mantêm um forte desempenho somente de texto comparável aos principais modelos de linguagem Qwen3. Isso torna o Qwen3-VL adequado para cenários de produção que abrangem IA de documentos, OCR multilíngue, assistência de software/UI, tarefas espaciais/incorporadas e pesquisa em agentes de linguagem de visão.",
+      "strengths": [
+        "Código",
+        "Matemática",
+        "Multimodal"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/qwen/qwen3-235b-a22b-thinking-2507",
+      "name": "Qwen: Qwen3 235B A22B Thinking 2507",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Qwen3-235B-A22B-Thinking-2507 é um modelo de linguagem de mistura de especialistas (MoE) de alto desempenho e peso aberto, otimizado para tarefas de raciocínio complexas. Ele ativa 22B de seus 235B de parâmetros por avanço e suporta nativamente até 262.144 tokens de contexto. Esta variante \"apenas pensando\" aprimora o raciocínio lógico estruturado, a matemática, a ciência e a geração de formato longo, mostrando forte desempenho de benchmark em AIME, SuperGPQA, LiveCodeBench e MMLU-Redux. Ele impõe um modo de raciocínio especial (</think>) e é projetado para saídas com muitos tokens (até 81.920 tokens) em domínios desafiadores.\n\nO modelo é ajustado por instrução e se destaca no raciocínio passo a passo, no uso de ferramentas, nos fluxos de trabalho de agentes e nas tarefas multilíngues. Esta versão representa a variante de código aberto mais capaz da série Qwen3-235B, superando muitos modelos fechados em casos de uso de raciocínio estruturado.",
+      "strengths": [
+        "Código",
+        "Matemática",
+        "Raciocínio Avançado"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/meta-llama/llama-3.2-3b-instruct:free",
+      "name": "Meta: Llama 3.2 3B Instruct",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Llama 3.2 3B é um modelo de linguagem multilíngue de 3 bilhões de parâmetros, otimizado para tarefas avançadas de processamento de linguagem natural, como geração de diálogo, raciocínio e resumo. Projetado com a mais recente arquitetura de transformador, ele oferece suporte a oito idiomas, incluindo inglês, espanhol e hindi, e é adaptável para idiomas adicionais.\n\nTreinado em 9 trilhões de tokens, o modelo Llama 3.2 3B se destaca no seguimento de instruções, raciocínio complexo e uso de ferramentas. Seu desempenho equilibrado o torna ideal para aplicações que necessitam de precisão e eficiência na geração de texto em configurações multilíngues.\n\nClique aqui para ver o [cartão do modelo original](https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/MODEL_CARD.md).\n\nO uso deste modelo está sujeito à [Política de Uso Aceitável da Meta](https://www.llama.com/llama3/use-policy/).",
+      "strengths": [
+        "Raciocínio Avançado",
+        "Agentes/Chamada de função",
+        "Contexto Longo"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/upstage/solar-pro-3:free",
+      "name": "Upstage: Solar Pro 3",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Solar Pro 3 é o poderoso modelo de linguagem Mixture-of-Experts (MoE) do Upstage. Com 102B de parâmetros totais e 12B de parâmetros ativos por passagem direta, ele oferece desempenho excepcional enquanto mantém a eficiência computacional. Otimizado para coreano com suporte para inglês e japonês.",
+      "strengths": [
+        "MoE"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/qwen/qwen3-4b:free",
+      "name": "Qwen: Qwen3 4B",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Qwen3-4B é um modelo de linguagem denso de 4 bilhões de parâmetros da série Qwen3, projetado para suportar tarefas de uso geral e de raciocínio intensivo. Ele introduz uma arquitetura de modo duplo – pensante e não pensante – permitindo a alternância dinâmica entre raciocínio lógico de alta precisão e geração eficiente de diálogo. Isso o torna adequado para bate-papo multiturno, acompanhamento de instruções e fluxos de trabalho complexos de agentes.",
+      "strengths": [
+        "Raciocínio Avançado",
+        "Agentes/Chamada de função",
+        "Alta Velocidade"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/liquid/lfm-2.5-1.2b-thinking:free",
+      "name": "LiquidAI: LFM2.5-1.2B-Thinking",
+      "provider": "openrouter",
+      "free": true,
+      "description": "LFM2.5-1.2B-Thinking é um modelo leve e focado no raciocínio, otimizado para tarefas de agente, extração de dados e RAG – enquanto ainda funciona confortavelmente em dispositivos de borda. Ele suporta contexto longo (até 32 mil tokens) e foi projetado para fornecer respostas de “pensamento” de maior qualidade em um modelo pequeno de 1,2B.",
+      "strengths": [
+        "Raciocínio Avançado",
+        "Agentes/Chamada de função",
+        "Alta Velocidade"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/liquid/lfm-2.5-1.2b-instruct:free",
+      "name": "LiquidAI: LFM2.5-1.2B-Instruct",
+      "provider": "openrouter",
+      "free": true,
+      "description": "LFM2.5-1.2B-Instruct é um modelo compacto e de alto desempenho ajustado por instrução, desenvolvido para IA rápida no dispositivo. Ele oferece bate-papo de alta qualidade em um volume de parâmetros de 1,2B, com inferência de borda eficiente e amplo suporte de tempo de execução.",
+      "strengths": [
+        "Alta Velocidade"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/google/gemma-3-27b-it:free",
+      "name": "Google: Gemma 3 27B",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Gemma 3 introduz multimodalidade, suportando entrada de linguagem visual e saída de texto. Ele lida com janelas de contexto de até 128 mil tokens, entende mais de 140 idiomas e oferece recursos aprimorados de matemática, raciocínio e bate-papo, incluindo saídas estruturadas e chamadas de funções. Gemma 3 27B é o modelo de código aberto mais recente do Google, sucessor do [Gemma 2](google/gemma-2-27b-it)",
+      "strengths": [
+        "Código",
+        "Matemática",
+        "Multimodal"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/mistralai/mistral-small-3.1-24b-instruct:free",
+      "name": "Mistral: Mistral Small 3.1 24B",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Mistral Small 3.1 24B Instruct é uma variante atualizada do Mistral Small 3 (2501), apresentando 24 bilhões de parâmetros com recursos multimodais avançados. Ele fornece desempenho de última geração em tarefas de raciocínio e visão baseadas em texto, incluindo análise de imagens, programação, raciocínio matemático e suporte multilíngue em dezenas de idiomas. Equipado com uma ampla janela de contexto de token de 128 mil e otimizado para inferência local eficiente, ele oferece suporte a casos de uso como agentes de conversação, chamada de função, compreensão de documentos longos e implantações sensíveis à privacidade. A versão atualizada é [Mistral Small 3.2](mistralai/mistral-small-3.2-24b-instruct)",
+      "strengths": [
+        "Código",
+        "Multimodal",
+        "Raciocínio Avançado"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
+      "name": "Venice: Uncensored",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Venice Uncensored Dolphin Mistral 24B Venice Edition é uma variante aprimorada do Mistral-Small-24B-Instruct-2501, desenvolvida por dphn.ai em colaboração com Venice.ai. Este modelo foi projetado como um LLM “sem censura” ajustado por instrução, preservando o controle do usuário sobre o alinhamento, prompts do sistema e comportamento. Destinado a casos de uso avançados e irrestritos, Venice Uncensored enfatiza a dirigibilidade e o comportamento transparente, removendo camadas padrão de segurança e alinhamento normalmente encontradas em modelos de assistente convencionais.",
+      "strengths": [
+        "Sem Censura"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/google/gemma-3-4b-it:free",
+      "name": "Google: Gemma 3 4B",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Gemma 3 introduz multimodalidade, suportando entrada de linguagem visual e saída de texto. Ele lida com janelas de contexto de até 128 mil tokens, entende mais de 140 idiomas e oferece recursos aprimorados de matemática, raciocínio e bate-papo, incluindo saídas estruturadas e chamadas de funções.",
+      "strengths": [
+        "Matemática",
+        "Multimodal",
+        "Raciocínio Avançado"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/google/gemma-3-12b-it:free",
+      "name": "Google: Gemma 3 12B",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Gemma 3 introduz multimodalidade, suportando entrada de linguagem visual e saída de texto. Ele lida com janelas de contexto de até 128 mil tokens, entende mais de 140 idiomas e oferece recursos aprimorados de matemática, raciocínio e bate-papo, incluindo saídas estruturadas e chamadas de funções. Gemma 3 12B é o segundo maior da família de modelos Gemma 3 depois de [Gemma 3 27B](google/gemma-3-27b-it)",
+      "strengths": [
+        "Matemática",
+        "Multimodal",
+        "Raciocínio Avançado"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/google/gemma-3n-e2b-it:free",
+      "name": "Google: Gemma 3n 2B",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Gemma 3n E2B IT é um modelo multimodal ajustado por instrução desenvolvido pelo Google DeepMind, projetado para operar com eficiência em um tamanho de parâmetro efetivo de 2B enquanto aproveita uma arquitetura de 6B. Baseado na arquitetura MatFormer, ele suporta submodelos aninhados e composição modular por meio da estrutura Mix-and-Match. Os modelos Gemma 3n são otimizados para implantação com poucos recursos, oferecendo comprimento de contexto de 32K e forte desempenho multilíngue e de raciocínio em benchmarks comuns. Esta variante é treinada em um corpus diversificado, incluindo código, matemática, web e dados multimodais.",
+      "strengths": [
+        "Código",
+        "Matemática",
+        "Multimodal"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/google/gemma-3n-e4b-it:free",
+      "name": "Google: Gemma 3n 4B",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Gemma 3n E4B-it é otimizado para execução eficiente em dispositivos móveis e com poucos recursos, como telefones, laptops e tablets. Ele suporta entradas multimodais – incluindo texto, dados visuais e áudio – permitindo diversas tarefas, como geração de texto, reconhecimento de fala, tradução e análise de imagens. Aproveitando inovações como o cache Per-Layer Embedding (PLE) e a arquitetura MatFormer, o Gemma 3n gerencia dinamicamente o uso de memória e a carga computacional ativando seletivamente os parâmetros do modelo, reduzindo significativamente os requisitos de recursos de tempo de execução.\n\nEste modelo oferece suporte a uma ampla variedade linguística (treinado em mais de 140 idiomas) e apresenta uma janela flexível de contexto de token de 32K. Gemma 3n pode carregar parâmetros seletivamente, otimizando a memória e a eficiência computacional com base na tarefa ou nos recursos do dispositivo, tornando-o adequado para aplicativos com capacidade offline e com foco na privacidade e soluções de IA no dispositivo. [Leia mais na postagem do blog](https://developers.googleblog.com/en/introduzindo-gemma-3n/)",
+      "strengths": [
+        "Alta Velocidade",
+        "Contexto Longo"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/stepfun/step-3.5-flash:free",
+      "name": "StepFun: Step 3.5 Flash",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Etapa 3.5 Flash é o modelo básico de código aberto mais capaz da StepFun. Construído em uma arquitetura esparsa de Mixture of Experts (MoE), ele ativa seletivamente apenas 11B de seus 196B de parâmetros por token. É um modelo de raciocínio incrivelmente eficiente em termos de velocidade, mesmo em contextos longos.",
+      "strengths": [
+        "Código",
+        "Raciocínio Avançado",
+        "Alta Velocidade"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/openrouter/free",
+      "name": "Models Router",
+      "provider": "openrouter",
+      "free": true,
+      "description": "A maneira mais simples de obter inferência gratuita. openrouter/free é um roteador que seleciona modelos gratuitos aleatoriamente entre os modelos disponíveis no OpenRouter. O roteador filtra de forma inteligente modelos que suportam recursos necessários para sua solicitação, como compreensão de imagem, chamada de ferramenta, saídas estruturadas e muito mais.",
+      "strengths": [
+        "Multimodal",
+        "Agentes/Chamada de função"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/arcee-ai/trinity-mini:free",
+      "name": "Arcee AI: Trinity Mini",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Trinity Mini é um modelo de linguagem esparso de mistura de especialistas com parâmetros de 26B (3B ativos) apresentando 128 especialistas com 8 ativos por token. Projetado para raciocínio eficiente em contextos longos (131k) com chamada de função robusta e fluxos de trabalho de agente em várias etapas.",
+      "strengths": [
+        "Raciocínio Avançado",
+        "Agentes/Chamada de função",
+        "Alta Velocidade"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/openai/gpt-oss-120b:free",
+      "name": "OpenAI: gpt-oss-120b",
+      "provider": "openrouter",
+      "free": true,
+      "description": "gpt-oss-120b é um modelo de linguagem Mixture-of-Experts (MoE) de peso aberto e 117B de parâmetros da OpenAI projetado para casos de uso de produção de alto raciocínio, agentes e de uso geral. Ele ativa parâmetros de 5,1B por avanço e é otimizado para rodar em uma única GPU H100 com quantização MXFP4 nativa. O modelo oferece suporte a profundidade de raciocínio configurável, acesso completo à cadeia de pensamento e uso de ferramentas nativas, incluindo chamada de função, navegação e geração de saída estruturada.",
+      "strengths": [
+        "Raciocínio Avançado",
+        "Agentes/Chamada de função",
+        "MoE"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/openai/gpt-oss-20b:free",
+      "name": "OpenAI: gpt-oss-20b",
+      "provider": "openrouter",
+      "free": true,
+      "description": "gpt-oss-20b é um modelo de parâmetro 21B de peso aberto lançado pela OpenAI sob a licença Apache 2.0. Ele usa uma arquitetura Mixture-of-Experts (MoE) com 3,6B de parâmetros ativos por passagem de encaminhamento, otimizada para inferência de menor latência e capacidade de implantação em hardware de consumidor ou de GPU única. O modelo é treinado no formato de resposta Harmony da OpenAI e suporta configuração de nível de raciocínio, ajuste fino e recursos de agente, incluindo chamada de função, uso de ferramentas e resultados estruturados.",
+      "strengths": [
+        "Raciocínio Avançado",
+        "Agentes/Chamada de função",
+        "MoE"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/z-ai/glm-4.5-air:free",
+      "name": "Z.ai: GLM 4.5 Air",
+      "provider": "openrouter",
+      "free": true,
+      "description": "GLM-4.5-Air é a variante leve de nossa mais recente família de modelos carro-chefe, também desenvolvida especificamente para aplicações centradas em agentes. Assim como o GLM-4.5, ele adota a arquitetura Mixture-of-Experts (MoE), mas com um tamanho de parâmetro mais compacto. O GLM-4.5-Air também suporta modos de inferência híbridos, oferecendo um “modo de pensamento” para raciocínio avançado e uso de ferramentas, e um “modo de não pensamento” para interação em tempo real. Os usuários podem controlar o comportamento do raciocínio com o booleano `reasoning` `enabled`. [Saiba mais em nossos documentos](https://openrouter.ai/docs/use-cases/reasoning-tokens#enable-reasoning-with-default-config)",
+      "strengths": [
+        "Raciocínio Avançado",
+        "Agentes/Chamada de função",
+        "Alta Velocidade"
+      ],
+      "costTier": "grátis"
+    },
+    {
+      "id": "openrouter/arcee-ai/trinity-large-preview:free",
+      "name": "Arcee AI: Trinity Large Preview",
+      "provider": "openrouter",
+      "free": true,
+      "description": "Trinity-Large-Preview é um modelo de linguagem de peso aberto em escala de fronteira da Arcee, construído como uma mistura de especialistas esparsa de 400B de parâmetros com 13B de parâmetros ativos por token usando roteamento especializado de 4 de 256. \n\nEle se destaca em escrita criativa, narrativa, encenação, cenários de bate-papo e assistência de voz em tempo real, melhor do que seu modelo de raciocínio médio normalmente consegue. Mas também estamos apresentando algumas de nossas mais recentes performances de agente. Ele foi treinado para navegar bem em equipamentos de agentes como OpenCode, Cline e Kilo Code, e para lidar com cadeias de ferramentas complexas e prompts longos e cheios de restrições. \n\nA arquitetura suporta nativamente janelas de contexto muito longas de até 512 mil tokens, com a API Preview atualmente servida em contexto de 128 mil usando quantização de 8 bits para implantação prática. Trinity-Large-Preview reflete a filosofia de design de eficiência em primeiro lugar da Arcee, oferecendo um modelo de fronteira orientado para a produção com pesos abertos e licenciamento permissivo adequado para aplicações e experimentação no mundo real.",
+      "strengths": [
+        "Código",
+        "Raciocínio Avançado",
+        "Agentes/Chamada de função"
+      ],
+      "costTier": "grátis"
+    }
+  ],
+  "local": [
+    {
+      "id": "local/llama-3-8b-instruct",
+      "name": "Llama 3 8B (LM Studio)",
+      "provider": "local",
+      "free": true,
+      "description": "Roda 100% offline no seu LM Studio localhost:1234",
+      "strengths": [
+        "Privacidade total",
+        "Offline"
+      ],
+      "costTier": "grátis"
+    }
+  ]
+}

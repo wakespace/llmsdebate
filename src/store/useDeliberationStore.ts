@@ -33,12 +33,16 @@ interface State {
   fullTranscriptResult: string | null;
   selectedResponseIds: string[];
   isJudging: boolean;
+  activeModelsIds: string[];
+  isSettingsOpen: boolean; // Controls Settings sidebar
   
   // Actions
+  setSettingsOpen: (open: boolean) => void;
   setPrompt: (prompt: string) => void;
   setSystemPrompt: (systemPrompt: string) => void;
   setRoundPrompt: (roundPrompt: string) => void;
   toggleModel: (modelId: string) => void;
+  toggleActiveModel: (modelId: string) => void;
   setSummarizationEnabled: (enabled: boolean) => void;
   startDeliberation: (draftSystemPrompt?: string) => void;
   startNextRound: (draftSystemPrompt?: string) => void;
@@ -65,6 +69,11 @@ export const useDeliberationStore = create<State>()(
       round: 1,
       responses: [],
       selectedModels: ['gemini-3-flash-preview-high'], // default selected
+      activeModelsIds: [
+        'gemini-3-flash-preview-high',
+        'openrouter/qwen/qwen3-vl-30b-a3b-thinking',
+        'openrouter/upstage/solar-pro-3:free'
+      ],
       status: 'idle',
       columnStatus: {},
       summarizationEnabled: false,
@@ -72,7 +81,10 @@ export const useDeliberationStore = create<State>()(
       fullTranscriptResult: null,
       selectedResponseIds: [],
       isJudging: false,
+      isSettingsOpen: false,
 
+      // Actions
+      setSettingsOpen: (open) => set({ isSettingsOpen: open }),
       setPrompt: (prompt) => set({ prompt }),
       setSystemPrompt: (systemPrompt) => set({ systemPrompt }),
       setRoundPrompt: (roundPrompt: string) => set({ roundPrompt }),
@@ -82,6 +94,16 @@ export const useDeliberationStore = create<State>()(
           ? state.selectedModels.filter(id => id !== modelId)
           : [...state.selectedModels, modelId];
         return { selectedModels: selected };
+      }),
+
+      toggleActiveModel: (modelId) => set((state) => {
+        const active = state.activeModelsIds.includes(modelId)
+          ? state.activeModelsIds.filter(id => id !== modelId)
+          : [...state.activeModelsIds, modelId];
+        
+        // If we disabled a model, make sure it's removed from the current selection too
+        const newSelected = state.selectedModels.filter(id => id !== modelId || active.includes(modelId));
+        return { activeModelsIds: active, selectedModels: newSelected };
       }),
 
       setSummarizationEnabled: (enabled) => set({ summarizationEnabled: enabled }),
@@ -236,6 +258,7 @@ export const useDeliberationStore = create<State>()(
         round: state.round,
         responses: state.responses,
         selectedModels: state.selectedModels,
+        activeModelsIds: state.activeModelsIds,
         summarizationEnabled: state.summarizationEnabled,
         synthesisResult: state.synthesisResult,
         fullTranscriptResult: state.fullTranscriptResult,

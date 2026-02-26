@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDeliberationStore } from "@/store/useDeliberationStore";
 import { InputArea } from "@/components/InputArea";
 import { ModelColumn } from "@/components/ModelColumn";
 import { ActionControls } from "@/components/ActionControls";
-import { BrainCircuit } from "lucide-react";
-import { ALL_MODELS } from "@/lib/models";
+import { BrainCircuit, Settings2 } from "lucide-react";
+import { SettingsSidebar } from "@/components/SettingsSidebar";
+import registryData from "@/data/models_registry.json";
 
 // Helper to parse Analysis and Conclusion safely
 function parseResponse(text: string) {
@@ -47,7 +48,8 @@ export default function Home() {
   const { 
     status, round, prompt, selectedModels, responses, 
     columnStatus, summarizationEnabled, 
-    setColumnStatus, addResponse, endDeliberation
+    setColumnStatus, addResponse, endDeliberation,
+    isSettingsOpen, setSettingsOpen
   } = useDeliberationStore();
 
   const deliberatingRef = useRef(false);
@@ -162,7 +164,14 @@ export default function Home() {
       const endpoint = isLocal ? '/api/local' : '/api/deliberate';
       
       // Map name
-      const knownModel = ALL_MODELS.find(m => m.id === modelId);
+      const registryArray = [
+        ...registryData.openai,
+        ...registryData.gemini,
+        ...registryData.perplexity,
+        ...registryData.openrouter,
+        ...registryData.local
+      ];
+      const knownModel = registryArray.find(m => m.id === modelId);
       let modelName = knownModel ? knownModel.name : modelId;
       if (isLocal) modelName = `${modelId.replace('local/', '')} (Local)`;
 
@@ -185,8 +194,6 @@ export default function Home() {
                hText = '...(histórico truncado)\n\n' + hText;
              }
              let userPromptText = `Problema original: ${prompt}\n\nResumo das perspetivas anteriores:\n${hText}\n\nReflita sobre as perspetivas acima. Estruture sua resposta em 'Análise' e 'Conclusão Final'.`;
-             
-
              
              messages.push({ role: 'user', content: userPromptText });
            }
@@ -263,35 +270,40 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col min-h-screen p-4 md:p-6 lg:p-8 max-w-[1700px] mx-auto w-full gap-6">
-      
-      {/* Top Header */}
-      <InputArea />
-
-      {/* Main Deliberation Grid Area — grows naturally with content */}
-      <div className="bg-white/[0.02] rounded-2xl border border-white/5 p-6 flex flex-col relative animate-fade-in shadow-inner z-10" style={{ animationDelay: '0.1s' }}>
+    <div className="flex min-h-screen bg-zinc-950 w-full relative">
+      <main className="flex flex-col flex-1 p-4 md:p-6 lg:p-8 max-w-[1700px] mx-auto w-full gap-6">
         
-        {selectedModels.length === 0 && responses.length === 0 && (
-          <div className="flex items-center justify-center text-white/20 flex-col gap-4 py-20">
-            <BrainCircuit className="w-24 h-24 opacity-20" />
-            <p className="text-lg font-medium tracking-wide">Selecione especialistas e inicie o debate.</p>
+        {/* Global Modals / Sidebars */}
+        <SettingsSidebar isOpen={isSettingsOpen} onClose={() => setSettingsOpen(false)} />
+
+        {/* Main Input Area */}
+        <InputArea />
+
+        {/* Main Deliberation Grid Area — grows naturally with content */}
+        <div className="bg-white/[0.02] rounded-2xl border border-white/5 p-6 flex flex-col relative animate-fade-in shadow-inner z-10" style={{ animationDelay: '0.1s' }}>
+          
+          {selectedModels.length === 0 && responses.length === 0 && (
+            <div className="flex items-center justify-center text-white/20 flex-col gap-4 py-20">
+              <BrainCircuit className="w-24 h-24 opacity-20" />
+              <p className="text-lg font-medium tracking-wide">Selecione especialistas e inicie o debate.</p>
+            </div>
+          )}
+          
+          <div className="flex gap-6 overflow-x-auto custom-scrollbar pb-2 snap-x relative w-full items-start">
+             {/* Show columns for all models that participated OR are currently selected */}
+             {Array.from(new Set([
+               ...selectedModels,
+               ...responses.filter(r => r.modelId !== 'user').map(r => r.modelId)
+             ])).map(modelId => (
+               <ModelColumn key={modelId} modelId={modelId} />
+             ))}
           </div>
-        )}
-        
-        <div className="flex gap-6 overflow-x-auto custom-scrollbar pb-2 snap-x relative w-full items-start">
-           {/* Show columns for all models that participated OR are currently selected */}
-           {Array.from(new Set([
-             ...selectedModels,
-             ...responses.filter(r => r.modelId !== 'user').map(r => r.modelId)
-           ])).map(modelId => (
-             <ModelColumn key={modelId} modelId={modelId} />
-           ))}
         </div>
-      </div>
 
-      {/* Bottom Controls */}
-      <ActionControls />
+        {/* Bottom Controls */}
+        <ActionControls />
 
-    </main>
+      </main>
+    </div>
   );
 }

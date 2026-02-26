@@ -10,11 +10,11 @@ Este projeto permite que você envie um _prompt_ e observe dezenas de diferentes
 
 - **Múltiplos Provedores de API Integrados:** Suporte ativo nativo para **OpenRouter**, **OpenAI**, **Perplexity** e **Google Gemini** em uma única interface.
 - **26 Modelos Especialistas:** Escolha a dedo qual IA vai fazer parte do seu grupo de deliberação. O sistema suporta os melhores raciocinadores do mundo:
-   - *Família Claude 4.5 e 4.6 (Opus, Sonnet, Haiku)*
-   - *Família GPT-5 (High, Codex, Pro, Mini)*
-   - *Família Gemini 3 (Pro e Flash com 1M de Tokens)*
-   - *Modelos Open-Source Asiáticos (DeepSeek, GLM-5, Kimi K2.5, Doubao, ERNIE)*
-   - *Série Perplexity Sonar (Pesquisa web ao vivo)*
+   - *Família Claude 4.5 e 4.6 (Opus, Sonnet, Haiku)* (Removidos da OpenRouter; requer chave API direta no futuro)
+   - *Família GPT-5 (High, Codex, Pro, Mini)* (Via OpenAI API)
+   - *Família Gemini 3 (Pro e Flash com 1M de Tokens)* (Via Google Gemini API)
+   - *Série Perplexity Sonar (Pesquisa web ao vivo)* (Via Perplexity API)
+   - *5 Gigantes 100% Gratuitos via OpenRouter:* Qwen Next 80B Instruct, Llama 3.3 70B Instruct, Qwen3 VL Thinking (30B), Upstage Solar Pro 3 e Liquid LFM-2.5 1.2b Thinking.
 - **Reflexão por Rodadas (Aprofundamento):** Os modelos não respondem apenas uma vez. Você pode iniciar a "Rodada 2", onde o sistema injeta as respostas de todos os especialistas da rodada passada no contexto, forçando-os a repensar suas ideias com base nas críticas uns dos outros.
 - **Transcrição e Síntese Final:** Exporte toda a cadeia de raciocínio da deliberação em formato `.MD` com o clique de um botão.
 - **Modelos Locais Offline:** O sistema consegue varrer automaticamente o seu **LM Studio** na porta `1234` e adicionar modelos locais executando diretos do seu equipamento (ex: Llama 3 70B, Qwen, etc) para participarem das rodadas sem custo de nuvem.

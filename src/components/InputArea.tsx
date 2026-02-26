@@ -6,6 +6,7 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 
 import { ALL_MODELS, getModelProvider } from "@/lib/models";
+import registryData from "@/data/models_registry.json";
 
 export function InputArea() {
   const { 
@@ -13,7 +14,8 @@ export function InputArea() {
     summarizationEnabled, setSummarizationEnabled, 
     status, startDeliberation, startNextRound, reset,
     systemPrompt, setSystemPrompt, responses,
-    selectedResponseIds, roundPrompt, setRoundPrompt
+    selectedResponseIds, roundPrompt, setRoundPrompt,
+    activeModelsIds, setSettingsOpen
   } = useDeliberationStore();
 
   const [localModels, setLocalModels] = useState<{id: string, name: string}[]>([]);
@@ -83,7 +85,19 @@ export function InputArea() {
   };
 
   const allModels = useMemo(() => {
-    const updatedModels = ALL_MODELS.map(m => {
+    // Flatten registryData into a single array
+    const registryArray = [
+      ...registryData.openai,
+      ...registryData.gemini,
+      ...registryData.perplexity,
+      ...registryData.openrouter,
+      ...registryData.local
+    ];
+
+    // Filter only those the user kept active via the Settings Sidebar
+    const activeModels = registryArray.filter(m => activeModelsIds.includes(m.id));
+
+    const updatedModels = activeModels.map(m => {
       // If it's an OpenRouter model we initially deemed 'free', but it's absent from real-time free list:
       if (m.provider === 'openrouter' && m.free === true && openRouterFreeModels !== null) {
         const rawId = m.id.replace('openrouter/', '');
@@ -101,9 +115,12 @@ export function InputArea() {
 
     return [
       ...updatedModels, 
-      ...localModels.map(m => ({ ...m, provider: 'local', free: true, description: '', strengths: [] as string[], costTier: 'grátis' as const, bestFor: '' }))
+      // Ensure discovered local models are also shown if they were activated
+      ...localModels
+          .filter(lm => activeModelsIds.includes(lm.id) && !updatedModels.some(um => um.id === lm.id))
+          .map(m => ({ ...m, provider: 'local', free: true, description: '', strengths: [] as string[], costTier: 'grátis' as const, bestFor: '' }))
     ];
-  }, [localModels, openRouterFreeModels]);
+  }, [activeModelsIds, localModels, openRouterFreeModels]);
 
   useEffect(() => {
     // Clean up any stale model IDs that were saved in the user's localStorage
@@ -241,11 +258,19 @@ export function InputArea() {
         {/* Right: Model Selection */}
         <div className="w-72 flex flex-col gap-3 bg-black/20 p-4 rounded-xl border border-white/5 backdrop-blur-sm">
           <div className="text-xs font-semibold text-zinc-500 uppercase tracking-widest flex items-center gap-2 mb-1">
-            <Settings2 className="w-4 h-4" />
             Especialistas
-            <Link href="/models" target="_blank" className="ml-auto text-zinc-600 hover:text-white transition-colors" title="Ver detalhes dos modelos">
-              <HelpCircle className="w-4 h-4" />
-            </Link>
+            <div className="ml-auto flex items-center gap-2">
+              <button 
+                onClick={() => setSettingsOpen(true)}
+                className="text-zinc-600 hover:text-white transition-colors" 
+                title="Configurações da Lista de Modelos e APIs"
+              >
+                <Settings2 className="w-4 h-4" />
+              </button>
+              <Link href="/models" target="_blank" className="text-zinc-600 hover:text-white transition-colors" title="Ver detalhes dos modelos">
+                <HelpCircle className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
           
           <div className="flex flex-col gap-1 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">

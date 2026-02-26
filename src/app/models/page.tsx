@@ -2,12 +2,7 @@ import { ALL_MODELS, type ModelInfo } from "@/lib/models";
 import { ArrowLeft, Zap, DollarSign, Brain, Globe, Code, Search, Cpu } from "lucide-react";
 import Link from "next/link";
 
-const costColors: Record<string, string> = {
-  'grátis': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-  'barato': 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-  'moderado': 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-  'caro': 'text-rose-400 bg-rose-500/10 border-rose-500/20',
-};
+// Removed costColors since we will use the same dynamic logic as ProviderAccordion
 
 const providerColors: Record<string, string> = {
   openai: 'from-slate-500/20 to-slate-500/5 border-slate-500/20',
@@ -52,17 +47,17 @@ export default function ModelsPage() {
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap gap-3 mb-8">
+        <div className="flex flex-wrap gap-4 mb-8">
           <div className="flex items-center gap-2 text-xs text-zinc-400">
-            <span className="text-emerald-400">●</span> Grátis
+            <span className="text-[11px] px-2 py-0.5 rounded font-mono font-medium tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 line-through decoration-emerald-500/50">0</span> Grátis
           </div>
           <div className="flex items-center gap-2 text-xs text-zinc-400">
-            <span className="text-amber-400">●</span> Requer créditos
+            <span className="text-[11px] px-2 py-0.5 rounded font-mono font-medium tracking-widest bg-amber-500/10 text-amber-500 border border-amber-500/20">$</span> Requer créditos
           </div>
           <div className="w-px h-4 bg-white/10" />
           <div className="flex items-center gap-1.5 text-xs text-zinc-500">
             <DollarSign className="w-3 h-3" />
-            Custo: grátis → barato → moderado → caro
+            Custo relativo: 0 (grátis) → $ (barato) → $$ (moderado) → $$$ (caro)
           </div>
         </div>
 
@@ -86,43 +81,36 @@ export default function ModelsPage() {
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-1">
+                  <div className="flex items-center gap-3 mb-2 flex-wrap">
                     <h2 className="text-lg font-semibold text-white">{model.name}</h2>
-                    <span className={`text-[11px] px-2 py-0.5 rounded-full border font-medium ${costColors[model.costTier]}`}>
-                      {model.costTier}
+                    <span className={`text-[11px] px-2 py-0.5 rounded font-mono font-medium tracking-widest ${
+                         model.free 
+                           ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 line-through decoration-emerald-500/50' 
+                           : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                       }`}>
+                         {model.free ? '0' : (
+                           model.costTier === 'barato' ? '$' : 
+                           model.costTier === 'moderado' ? '$$' : '$$$'
+                         )}
                     </span>
                     <span className="text-[11px] px-2 py-0.5 rounded-full bg-white/5 text-zinc-500 border border-white/10">
                       {providerNames[model.provider] || model.provider}
                     </span>
                   </div>
                   
-                  <p className="text-sm text-zinc-400 mb-3">{model.description}</p>
+                  <p className="text-sm text-zinc-400 mb-4">{model.description}</p>
                   
-                  <div className="flex flex-wrap gap-2 mb-2">
+                  <div className="flex flex-wrap gap-2 mb-3">
                     {model.strengths.map((s) => (
-                      <span key={s} className="text-xs px-2 py-1 rounded-md bg-white/5 text-zinc-300 border border-white/5">
+                      <span key={s} className="text-[11px] px-2 py-1 rounded-md bg-white/5 text-zinc-300 border border-white/5">
                         {s}
                       </span>
                     ))}
                   </div>
 
                   <p className="text-xs text-zinc-500 mt-2">
-                    <span className="text-zinc-400 font-medium">Recomendado para:</span> {model.bestFor}
+                    <span className="text-zinc-400 font-medium tracking-wide">RECOMENDADO PARA:</span> {model.bestFor}
                   </p>
-                </div>
-
-                {/* Free/Paid indicator */}
-                <div className="shrink-0">
-                  {model.free ? (
-                    <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
-                      Grátis
-                    </span>
-                  ) : (
-                    <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium flex items-center gap-1">
-                      <DollarSign className="w-3 h-3" />
-                      Créditos
-                    </span>
-                  )}
                 </div>
               </div>
             </div>

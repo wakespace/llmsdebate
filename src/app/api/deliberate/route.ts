@@ -121,10 +121,15 @@ export async function POST(req: NextRequest) {
            if (errObj.error?.code === 402 || errText.includes('credits') || errText.includes('max_tokens')) {
               throw new Error("Saldo insuficiente ou limite de tokens atingido na OpenRouter para utilizar este modelo Premium.");
            }
-           errText = errObj.error?.message || errText;
+           errText = errObj.error?.metadata?.raw || errObj.error?.message || errText;
         } catch(e: any) {
            if (e.message.includes("Saldo insuficiente")) throw e;
         }
+
+        if (typeof errText === 'string' && errText.includes('rate-limited upstream')) {
+           throw new Error("Opção Gratuita Esgotada Temporariamente: Este modelo atingiu o limite de requisições globais da hospedagem. Aguarde alguns segundos ou tente um dos outros modelos.");
+        }
+
         throw new Error(`OpenRouter Error: ${errText}`);
       }
       const data = await res.json();
