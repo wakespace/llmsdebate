@@ -9,15 +9,13 @@ Este projeto permite que você envie um _prompt_ e observe dezenas de diferentes
 ## ✨ Principais Funcionalidades
 
 - **Múltiplos Provedores de API Integrados:** Suporte ativo nativo para **OpenRouter**, **OpenAI**, **Perplexity** e **Google Gemini** em uma única interface.
-- **26 Modelos Especialistas:** Escolha a dedo qual IA vai fazer parte do seu grupo de deliberação. O sistema suporta os melhores raciocinadores do mundo:
-   - *Família Claude 4.5 e 4.6 (Opus, Sonnet, Haiku)* (Removidos da OpenRouter; requer chave API direta no futuro)
-   - *Família GPT-5 (High, Codex, Pro, Mini)* (Via OpenAI API)
-   - *Família Gemini 3 (Pro e Flash com 1M de Tokens)* (Via Google Gemini API)
-   - *Série Perplexity Sonar (Pesquisa web ao vivo)* (Via Perplexity API)
-   - *5 Gigantes 100% Gratuitos via OpenRouter:* Qwen Next 80B Instruct, Llama 3.3 70B Instruct, Qwen3 VL Thinking (30B), Upstage Solar Pro 3 e Liquid LFM-2.5 1.2b Thinking.
-- **Reflexão por Rodadas (Aprofundamento):** Os modelos não respondem apenas uma vez. Você pode iniciar a "Rodada 2", onde o sistema injeta as respostas de todos os especialistas da rodada passada no contexto, forçando-os a repensar suas ideias com base nas críticas uns dos outros.
+- **Atualização Dinâmica de Modelos:** Uma pipeline automatizada via GitHub Actions e Node.js atualiza regularmente os modelos suportados puxando do registro da OpenRouter, com suporte simultâneo a chaves da OpenAI, Gemini, Perplexity e Anthropic.
+- **Múltiplos Modelos Especialistas:** Escolha a dedo qual IA fará parte do seu grupo de deliberação a partir de uma lista expansiva e atualizada.
+- **Reflexão por Rodadas (Aprofundamento):** Os modelos não respondem apenas uma vez. Você pode iniciar novas rodadas onde o sistema injeta as respostas de todos os especialistas da rodada passada no contexto, forçando-os a repensar suas visões.
+- **Juiz Integrado (Judge LLM):** Utiliza um LLM superior como "Juiz" para ler o histórico da deliberação, comparar argumentos, resolver divergências e construir um consenso bem elaborado.
+- **Interface e Configurações Refinadas:** Nova barra lateral que agrupa parâmetros de controle, configurações das APIs para provedores variados e personalização do layout da deliberação de maneira intuitiva.
 - **Transcrição e Síntese Final:** Exporte toda a cadeia de raciocínio da deliberação em formato `.MD` com o clique de um botão.
-- **Modelos Locais Offline:** O sistema consegue varrer automaticamente o seu **LM Studio** na porta `1234` e adicionar modelos locais executando diretos do seu equipamento (ex: Llama 3 70B, Qwen, etc) para participarem das rodadas sem custo de nuvem.
+- **Modelos Locais Offline:** O sistema consegue varrer a porta local para identificar instâncias do seu **LM Studio** e adicionar IAs diretos do seu equipamento (ex: Llama 3, Qwen) como participantes das rodadas de debate grátis e sem latência.
 
 ---
 
