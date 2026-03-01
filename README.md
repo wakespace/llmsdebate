@@ -12,8 +12,8 @@ Este projeto permite que você envie um _prompt_ e observe dezenas de diferentes
 - **Atualização Dinâmica de Modelos:** Uma pipeline automatizada via GitHub Actions e Node.js atualiza regularmente os modelos suportados puxando do registro da OpenRouter, com suporte simultâneo a chaves da OpenAI, Gemini, Perplexity e Anthropic.
 - **Múltiplos Modelos Especialistas:** Escolha a dedo qual IA fará parte do seu grupo de deliberação a partir de uma lista expansiva e atualizada.
 - **Reflexão por Rodadas (Aprofundamento):** Os modelos não respondem apenas uma vez. Você pode iniciar novas rodadas onde o sistema injeta as respostas de todos os especialistas da rodada passada no contexto, forçando-os a repensar suas visões.
+- **Personas Customizadas (Especialistas):** Crie e atribua "Especialistas" (como Arquiteto, Engenheiro de Qualidade, Product Manager, etc.) aos modelos. O sistema injeta automaticamente o papel e as diretrizes do especialista no *system_prompt* antes do debate, mudando radicalmente os pontos de vista da deliberação.
 - **Juiz Integrado (Judge LLM):** Utiliza um LLM superior como "Juiz" para ler o histórico da deliberação, comparar argumentos, resolver divergências e construir um consenso bem elaborado.
-- **Interface e Configurações Refinadas:** Nova barra lateral que agrupa parâmetros de controle, configurações das APIs para provedores variados e personalização do layout da deliberação de maneira intuitiva.
 - **Transcrição e Síntese Final:** Exporte toda a cadeia de raciocínio da deliberação em formato `.MD` com o clique de um botão.
 - **Modelos Locais Offline:** O sistema consegue varrer a porta local para identificar instâncias do seu **LM Studio** e adicionar IAs diretos do seu equipamento (ex: Llama 3, Qwen) como participantes das rodadas de debate grátis e sem latência.
 

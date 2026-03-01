@@ -151,7 +151,10 @@ export function InputArea() {
         </div>
         
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 cursor-pointer group">
+          <label 
+            className="flex items-center gap-2 cursor-pointer group"
+            title="Quando ativada, gera automaticamente uma síntese final consolidando os argumentos de todos os especialistas ao término da deliberação"
+          >
             <span className="text-sm font-medium text-zinc-400 group-hover:text-white transition-colors">Sumarização Automática</span>
             <div className="relative inline-block w-11 h-6 transition duration-300 ease-in-out align-middle">
               <input 

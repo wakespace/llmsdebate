@@ -64,6 +64,25 @@ export default function Home() {
     }
   }, [status, round]);
 
+  useEffect(() => {
+    const store = useDeliberationStore.getState();
+    if (!store.hasSeededPersonas) {
+      import('@/store/useDeliberationStore').then(({ DEFAULT_PERSONAS }) => {
+        const state = useDeliberationStore.getState();
+        if (state.hasSeededPersonas) return;
+        
+        const missingPersonas = DEFAULT_PERSONAS.filter(
+          dp => !state.personas.some(p => p.id === dp.id)
+        );
+        useDeliberationStore.setState({
+           hasSeededPersonas: true,
+           personas: [...state.personas, ...missingPersonas],
+           activePersonasIds: [...new Set([...state.activePersonasIds, ...missingPersonas.map(p => p.id)])]
+        });
+      });
+    }
+  }, []);
+
   const executeRound = async () => {
     // Check if the user contributed text for this specific round 
     const currentSystemPrompt = useDeliberationStore.getState().activeSystemPrompt;
@@ -179,11 +198,21 @@ export default function Home() {
       let hasError = false;
       let errorMsg = undefined;
 
+      // Persona Context Injection
+      const { modelPersonas, personas } = useDeliberationStore.getState();
+      const assignedPersonaId = modelPersonas[modelId];
+      const assignedPersona = assignedPersonaId ? personas.find(p => p.id === assignedPersonaId) : null;
+      
+      let customizedSystemPrompt = currentSystemPrompt;
+      if (assignedPersona) {
+         customizedSystemPrompt = `Sua Personificação atual: ${assignedPersona.name}\nDiretrizes da sua Especialidade: ${assignedPersona.description}\n\n${currentSystemPrompt}`;
+      }
+
       try {
         let bodyPayload: any;
         
         if (isLocal) { // Map to OpenAI API standard to be proxied
-           let messages = [{ role: 'system', content: currentSystemPrompt }];
+           let messages = [{ role: 'system', content: customizedSystemPrompt }];
            if (round === 1) {
              messages.push({ role: 'user', content: prompt });
            } else {
@@ -208,7 +237,7 @@ export default function Home() {
              round,
              model: modelId,
              previousResponses: historyPayload,
-             systemPrompt: currentSystemPrompt
+             systemPrompt: customizedSystemPrompt
            };
         }
 

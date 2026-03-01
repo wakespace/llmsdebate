@@ -9,7 +9,16 @@ interface Props {
 }
 
 export function ModelColumn({ modelId }: Props) {
-  const { responses, columnStatus } = useDeliberationStore();
+  const { 
+    responses, 
+    columnStatus, 
+    round, 
+    status: globalStatus, 
+    activePersonasIds, 
+    modelPersonas, 
+    setModelPersona, 
+    personas 
+  } = useDeliberationStore();
   
   const modelResponses = responses.filter(r => r.modelId === modelId).sort((a,b) => a.round - b.round);
   const status = columnStatus[modelId] || 'idle';
@@ -24,9 +33,32 @@ export function ModelColumn({ modelId }: Props) {
       
       {/* Column Header */}
       <div className="bg-black/40 backdrop-blur-xl rounded-xl p-4 border border-white/10 shadow-lg shrink-0 flex items-center justify-between sticky top-0 z-20">
-        <h2 className="font-medium text-zinc-100 truncate pr-2 tracking-wide" title={friendlyName}>
-          {friendlyName}
-        </h2>
+        <div className="flex flex-col flex-1 min-w-0 pr-4">
+          <h2 className="font-medium text-zinc-100 truncate tracking-wide" title={friendlyName}>
+            {friendlyName}
+          </h2>
+          
+          {/* Persona Selector */}
+          {activePersonasIds.length > 0 && (
+            <div className="mt-2">
+              <select 
+                title="Selecione uma especialidade/persona"
+                disabled={status === 'loading' || globalStatus === 'deliberating'}
+                value={modelPersonas[modelId] || ""}
+                onChange={(e) => setModelPersona(modelId, e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-zinc-300 focus:outline-none focus:ring-1 focus:ring-white/30 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+              >
+                <option value="">Sem Persona (Padrão)</option>
+                {personas
+                  .filter(p => activePersonasIds.includes(p.id))
+                  .map(p => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))
+                }
+              </select>
+            </div>
+          )}
+        </div>
         
         {/* Status Indicator */}
         <div className="shrink-0 flex items-center justify-center">
@@ -38,9 +70,9 @@ export function ModelColumn({ modelId }: Props) {
 
       {/* Responses Area - Grid slots */}
       <div className="flex flex-col gap-4">
-        {Array.from({ length: useDeliberationStore.getState().round }, (_, i) => i + 1).map((r) => {
+        {Array.from({ length: round }, (_, i) => i + 1).map((r) => {
            const res = modelResponses.find(resp => resp.round === r);
-           const isCurrentRound = useDeliberationStore.getState().round === r;
+           const isCurrentRound = round === r;
            const isProcessingThisColumn = isCurrentRound && (status === 'loading' || status === 'error');
            const latestResponseError = modelResponses[modelResponses.length - 1]?.error;
 
