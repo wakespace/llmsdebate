@@ -6,13 +6,13 @@ import { JUDGE_SYSTEM_PROMPT } from '@/lib/prompts';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { prompt, transcript, judgeModel } = body;
+    const { prompt, transcript, judgeModel, customSystemPrompt } = body;
 
     if (!prompt || !transcript || !judgeModel) {
       return NextResponse.json({ error: 'Valores obrigatórios ausentes' }, { status: 400 });
     }
 
-    const systemPrompt = JUDGE_SYSTEM_PROMPT;
+    const systemPrompt = customSystemPrompt || JUDGE_SYSTEM_PROMPT;
 
     const messages = [
       { role: 'system', content: systemPrompt },

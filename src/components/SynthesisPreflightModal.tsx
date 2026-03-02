@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { useDeliberationStore } from "@/store/useDeliberationStore";
-import { AlertTriangle, Gavel, Check, ShieldAlert, Sparkles, X } from "lucide-react";
+import { AlertTriangle, Gavel, Check, ShieldAlert, Sparkles, X, Edit2 } from "lucide-react";
 import registryData from "@/data/models_registry.json";
 import { AVAILABLE_MODELS } from "@/lib/models";
 import { JUDGE_SYSTEM_PROMPT } from "@/lib/prompts";
@@ -16,6 +17,8 @@ export function SynthesisPreflightModal() {
     isJudging
   } = useDeliberationStore();
 
+  const [customJudgePrompt, setCustomJudgePrompt] = useState(JUDGE_SYSTEM_PROMPT);
+
   if (!isSynthesisModalOpen || !pendingSynthesisModelId) return null;
 
   // History calculation (Transcript)
@@ -31,7 +34,7 @@ export function SynthesisPreflightModal() {
   const fullPayloadPreview = `Problema original: ${prompt}\n\n[DEBATE]\n${transcriptText}`;
 
   // Token estimates (rough estimate: 1 token ≈ 4 characters)
-  const systemPromptTokens = Math.ceil((JUDGE_SYSTEM_PROMPT).length / 4);
+  const systemPromptTokens = Math.ceil((customJudgePrompt).length / 4);
   const userPromptTokens = Math.ceil((fullPayloadPreview).length / 4);
 
   const estimatedTotalTokens = systemPromptTokens + userPromptTokens;
@@ -56,7 +59,7 @@ export function SynthesisPreflightModal() {
   const handleConfirm = async () => {
     // Engatilha requisição paralela via Zustand, Modal fechará imediatamente.
     cancelSynthesisModal();
-    await requestJudgeSynthesis(pendingSynthesisModelId);
+    await requestJudgeSynthesis(pendingSynthesisModelId, customJudgePrompt);
   };
 
   return (
@@ -121,15 +124,32 @@ export function SynthesisPreflightModal() {
 
           {/* Content Preview */}
           <div>
-            <h3 className="text-sm font-medium text-zinc-300 mb-3">Visualização do Contexto de Submissão</h3>
-            <div className="bg-black/40 border border-white/5 rounded-xl p-4 text-xs font-mono text-zinc-400 whitespace-pre-wrap max-h-48 overflow-y-auto custom-scrollbar leading-relaxed">
-              <span className="text-indigo-400">{'<SystemPromptJuiz>\n'}</span>
-              {JUDGE_SYSTEM_PROMPT}
-              <span className="text-indigo-400">{'\n</SystemPromptJuiz>\n\n'}</span>
-              
-              <span className="text-amber-400">{'<UserPrompt>\n'}</span>
-              {fullPayloadPreview}
-              <span className="text-amber-400">{'\n</UserPrompt>'}</span>
+            <div className="flex items-center justify-between mb-3">
+               <h3 className="text-sm font-medium text-zinc-300">Instruções do Juiz & Contexto de Submissão</h3>
+               <div className="flex items-center gap-1.5 text-xs font-medium text-indigo-400 bg-indigo-500/10 px-2 py-1 rounded-md">
+                 <Edit2 className="w-3 h-3" /> Editável
+               </div>
+            </div>
+            
+            <div className="bg-black/40 border border-white/5 rounded-xl flex flex-col overflow-hidden">
+               {/* Editable System Prompt */}
+               <div className="p-4 border-b border-white/5 bg-indigo-500/5">
+                 <label className="text-xs font-semibold text-indigo-400 mb-2 block uppercase tracking-wider">System Prompt (Instruções Finais)</label>
+                 <textarea 
+                   value={customJudgePrompt}
+                   onChange={(e) => setCustomJudgePrompt(e.target.value)}
+                   className="w-full bg-transparent text-sm text-zinc-300 min-h-[140px] resize-y outline-none focus:ring-0 custom-scrollbar leading-relaxed"
+                   spellCheck={false}
+                 />
+               </div>
+
+               {/* ReadOnly Payload */}
+               <div className="p-4 flex-1">
+                 <label className="text-xs font-semibold text-amber-400 mb-2 block uppercase tracking-wider">User Prompt (Transcript do Debate)</label>
+                 <div className="text-xs font-mono text-zinc-500 whitespace-pre-wrap max-h-48 overflow-y-auto custom-scrollbar leading-relaxed">
+                   {fullPayloadPreview}
+                 </div>
+               </div>
             </div>
           </div>
 
