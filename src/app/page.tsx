@@ -115,7 +115,7 @@ export default function Home() {
         // Implement summarization using the first active model (or gemini ideally)
         const allTextHistory = responses
           .filter(r => r.round < round && !r.error && selectedIds.includes(r.id))
-          .map(r => `[${r.modelName} - Rodada ${r.round}]:\n${r.text}`)
+          .map(r => `[${r.modelName}${r.personaName ? ` (${r.personaName})` : ''} - Rodada ${r.round}]:\n${r.text}`)
           .join('\n\n');
           
         if (allTextHistory.length === 0) {
@@ -219,7 +219,7 @@ export default function Home() {
              messages.push({ role: 'user', content: prompt });
              } else {
              // Truncate history for local models (limited context window ~4k tokens)
-             let hText = historyPayload.map((r: Partial<DeliberationResponse>) => `[${r.modelName} - Rodada ${r.round}]:\n${r.text}`).join('\n\n');
+             let hText = historyPayload.map((r: Partial<DeliberationResponse>) => `[${r.modelName}${r.personaName ? ` (${r.personaName})` : ''} - Rodada ${r.round}]:\n${r.text}`).join('\n\n');
              if (hText.length > 3000) {
                hText = hText.slice(-3000);
                hText = '...(histórico truncado)\n\n' + hText;
@@ -271,6 +271,7 @@ export default function Home() {
            round,
            modelId,
            modelName,
+           personaName: assignedPersona?.name,
            text: "",
            analysis: "",
            conclusion: "",
@@ -285,6 +286,7 @@ export default function Home() {
            round,
            modelId,
            modelName,
+           personaName: assignedPersona?.name,
            text: resultText,
            analysis,
            conclusion,

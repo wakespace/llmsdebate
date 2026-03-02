@@ -37,6 +37,7 @@ export function ResponseCard({ response }: Props) {
            <div className="flex items-center gap-1.5 font-medium tracking-wide">
              <Bot className="w-3.5 h-3.5 text-zinc-300" />
              Rodada {response.round}
+             {response.personaName && <span className="text-zinc-500 font-normal ml-1">・ {response.personaName}</span>}
            </div>
          </div>
 

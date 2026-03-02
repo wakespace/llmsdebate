@@ -8,6 +8,7 @@ interface PreviousResponse {
   modelName: string;
   round: number | string;
   text: string;
+  personaName?: string;
 }
 
 interface RequestBody {
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
     if (round === 1) {
       messages.push({ role: 'user', content: prompt });
     } else {
-      const hText = previousResponses.map((r: PreviousResponse) => `[${r.modelName} - Rodada ${r.round}]:\n${r.text}`).join('\n\n');
+      const hText = previousResponses.map((r: PreviousResponse) => `[${r.modelName}${r.personaName ? ` (${r.personaName})` : ''} - Rodada ${r.round}]:\n${r.text}`).join('\n\n');
       const userPromptText = `Problema original: ${prompt}\n\nResumo das perspetivas anteriores:\n${hText}\n\nReflita sobre as perspetivas acima. Estruture sua resposta em 'Análise' e 'Conclusão Final'.`;
       messages.push({ role: 'user', content: userPromptText });
     }
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
       
       // Gemini needs alternating roles context, better structure
       const geminiContents = previousResponses.flatMap((r: PreviousResponse) => [
-        { role: "user", parts: [{ text: `[Histórico - ${r.modelName} Rodada ${r.round}]:\n${r.text}` }] },
+        { role: "user", parts: [{ text: `[Histórico - ${r.modelName}${r.personaName ? ` (${r.personaName})` : ''} Rodada ${r.round}]:\n${r.text}` }] },
         { role: "model", parts: [{ text: r.text }] } // Assuming previous responses are from models
       ]);
       geminiContents.push({ role: "user", parts: [{ text: round === 1 ? prompt : `Problema original: ${prompt}\n\nAja como um dos juizes avaliadores desse painel, continue a deliberação considerando o histórico fornecido e produza sua nova Análise e Conclusão Final.` }] });

@@ -11,6 +11,7 @@ export interface DeliberationResponse {
   text: string;
   analysis: string;
   conclusion: string;
+  personaName?: string;
   error?: string;
   durationMs?: number;
 }
@@ -244,7 +245,7 @@ export const useDeliberationStore = create<State>()(
           .sort((a, b) => a.round - b.round || a.modelName.localeCompare(b.modelName));
 
         const transcript = selectedResponses
-          .map(r => `## ${r.modelName} — Rodada ${r.round}\n\n### Análise\n${r.analysis}\n\n### Conclusão Final\n${r.conclusion}`)
+          .map(r => `## ${r.modelName}${r.personaName ? ` (${r.personaName})` : ''} — Rodada ${r.round}\n\n### Análise\n${r.analysis}\n\n### Conclusão Final\n${r.conclusion}`)
           .join('\n\n---\n\n');
 
         return {
@@ -265,7 +266,7 @@ export const useDeliberationStore = create<State>()(
           .sort((a, b) => a.round - b.round || a.modelName.localeCompare(b.modelName));
 
         const transcript = selectedResponses
-          .map(r => `## ${r.modelName} — Rodada ${r.round}\n\n### Análise\n${r.analysis}\n\n### Conclusão Final\n${r.conclusion}`)
+          .map(r => `## ${r.modelName}${r.personaName ? ` (${r.personaName})` : ''} — Rodada ${r.round}\n\n### Análise\n${r.analysis}\n\n### Conclusão Final\n${r.conclusion}`)
           .join('\n\n---\n\n');
 
         try {

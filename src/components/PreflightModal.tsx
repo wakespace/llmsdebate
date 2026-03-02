@@ -44,7 +44,7 @@ export function PreflightModal() {
         break;
       }
     }
-    historyText = kept.reverse().map(r => `[${r.modelName} - Rodada ${r.round}]:\n${r.text}`).join('\n\n');
+    historyText = kept.reverse().map(r => `[${r.modelName}${r.personaName ? ` (${r.personaName})` : ''} - Rodada ${r.round}]:\n${r.text}`).join('\n\n');
   } else if (targetRound > 1 && summarizationEnabled) {
     historyText = "Resumo do Sistema: ... (A síntese será gerada antes do envio economizando milhares de tokens)";
   }
