@@ -1757,7 +1757,7 @@
       "provider": "openrouter",
       "free": true,
       "contextLength": 131072,
-      "description": "Gemma 3 introduz multimodalidade, suportando entrada de linguagem visual e saída de texto. Ele lida com janelas de contexto de até 128 mil tokens, entende mais de 140 idiomas e oferece recursos aprimorados de matemática, raciocínio e bate-papo, incluindo saídas estruturadas e chamadas de funções. Gemma 3 27B é o modelo de código aberto mais recente do Google, sucessor do [Gemma 2](google/gemma-2-27b-it)",
+      "description": "Gemma 3 introduz multimodalidade, suportando entrada de linguagem visual e saída de texto. Ele lida com janelas de contexto de até 128 mil tokens, entende mais de 140 idiomas e oferece recursos aprimorados de matemática, raciocínio e bate-papo, incluindo saídas estruturadas e chamadas de funções. Gemma 3 27B é o mais recente modelo de código aberto do Google, sucessor do [Gemma 2](google/gemma-2-27b-it)",
       "strengths": [
         "Código",
         "Matemática",
