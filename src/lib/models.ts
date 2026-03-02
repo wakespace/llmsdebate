@@ -14,6 +14,16 @@ export interface ModelInfo {
 // Ranking based on LMSYS Arena, MMLU-Pro, HumanEval, reasoning benchmarks
 export const ALL_MODELS: ModelInfo[] = [
   {
+    id: "openai/gpt-4o-mini",
+    name: "GPT-4o Mini",
+    provider: "openai",
+    free: false,
+    description: "Modelo da OpenAI extremamente rápido e de baixo custo, ideal para análises rápidas e interações ágeis.",
+    strengths: ["Ultra rápido", "Baixíssima latência", "Custo-benefício excelente"],
+    costTier: "barato",
+    bestFor: "Deliberações velozes, chamadas curtas e resumo (síntese) dos debates com ótimo custo benefício.",
+  },
+  {
     id: "openai/gpt-5.2-high",
     name: "GPT-5.2 High",
     provider: "openai",
