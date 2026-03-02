@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Info } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useDeliberationStore } from "@/store/useDeliberationStore";
 
 interface ModelData {
@@ -15,7 +15,6 @@ interface ModelData {
 }
 
 export function ProviderAccordion({ 
-  providerId, 
   title, 
   icon, 
   models = [] 

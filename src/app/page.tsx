@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useDeliberationStore } from "@/store/useDeliberationStore";
+import { useEffect, useRef } from "react";
+import { useDeliberationStore, DeliberationResponse } from "@/store/useDeliberationStore";
 import { InputArea } from "@/components/InputArea";
 import { ModelColumn } from "@/components/ModelColumn";
 import { ActionControls } from "@/components/ActionControls";
-import { BrainCircuit, Settings2 } from "lucide-react";
+import { BrainCircuit } from "lucide-react";
 import { SettingsSidebar } from "@/components/SettingsSidebar";
+import { PreflightModal } from "@/components/PreflightModal";
 import registryData from "@/data/models_registry.json";
 
 // Helper to parse Analysis and Conclusion safely
@@ -47,8 +48,8 @@ function parseResponse(text: string) {
 export default function Home() {
   const { 
     status, round, prompt, selectedModels, responses, 
-    columnStatus, summarizationEnabled, 
-    setColumnStatus, addResponse, endDeliberation,
+    summarizationEnabled, 
+    setColumnStatus, addResponse,
     isSettingsOpen, setSettingsOpen
   } = useDeliberationStore();
 
@@ -62,6 +63,7 @@ export default function Home() {
     } else if (status !== 'deliberating') {
       deliberatingRef.current = false;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, round]);
 
   useEffect(() => {
@@ -103,7 +105,7 @@ export default function Home() {
     }
 
     // 2. Prepare History Truncation / Summarization logic
-    let historyPayload: any[] = [];
+    let historyPayload: Partial<DeliberationResponse>[] = [];
     
     // Get user-selected response IDs to filter context
     const selectedIds = useDeliberationStore.getState().selectedResponseIds;
@@ -123,11 +125,11 @@ export default function Home() {
           try {
             const summaryPrompt = `Resuma as principais perspetivas, pontos de convergência e divergência das rodadas anteriores de forma estruturada e objetiva: \n\n${allTextHistory}`;
             
-            let sumModel = selectedModels.find(m => m.includes('gemini')) || activeModels[0];
+            const sumModel = selectedModels.find(m => m.includes('gemini')) || activeModels[0];
             const isLocal = sumModel.startsWith('local/');
             
             const endpoint = isLocal ? '/api/local' : '/api/deliberate';
-            let bodyPayload: any = { prompt: summaryPrompt, round: 1, model: sumModel };
+            let bodyPayload: Record<string, unknown> = { prompt: summaryPrompt, round: 1, model: sumModel };
             if (isLocal) {
               bodyPayload = {
                 model: sumModel.replace('local/', ''),
@@ -144,11 +146,11 @@ export default function Home() {
             if (res.ok) {
               const data = await res.json();
               const summaryText = isLocal ? data.choices?.[0]?.message?.content : data.text;
-              historyPayload = [{ modelName: "Resumo do Sistema", round: 'Anterior', text: summaryText }];
+              historyPayload = [{ modelName: "Resumo do Sistema", round: 0, text: summaryText }];
             } else {
                historyPayload = responses.filter(r => !r.error && selectedIds.includes(r.id));
             }
-          } catch (e) {
+          } catch {
             historyPayload = responses.filter(r => !r.error && selectedIds.includes(r.id));
           }
         }
@@ -209,20 +211,20 @@ export default function Home() {
       }
 
       try {
-        let bodyPayload: any;
+        let bodyPayload: Record<string, unknown>;
         
         if (isLocal) { // Map to OpenAI API standard to be proxied
-           let messages = [{ role: 'system', content: customizedSystemPrompt }];
+           const messages = [{ role: 'system', content: customizedSystemPrompt }];
            if (round === 1) {
              messages.push({ role: 'user', content: prompt });
-           } else {
+             } else {
              // Truncate history for local models (limited context window ~4k tokens)
-             let hText = historyPayload.map((r: any) => `[${r.modelName} - Rodada ${r.round}]:\n${r.text}`).join('\n\n');
+             let hText = historyPayload.map((r: Partial<DeliberationResponse>) => `[${r.modelName} - Rodada ${r.round}]:\n${r.text}`).join('\n\n');
              if (hText.length > 3000) {
                hText = hText.slice(-3000);
                hText = '...(histórico truncado)\n\n' + hText;
              }
-             let userPromptText = `Problema original: ${prompt}\n\nResumo das perspetivas anteriores:\n${hText}\n\nReflita sobre as perspetivas acima. Estruture sua resposta em 'Análise' e 'Conclusão Final'.`;
+             const userPromptText = `Problema original: ${prompt}\n\nResumo das perspetivas anteriores:\n${hText}\n\nReflita sobre as perspetivas acima. Estruture sua resposta em 'Análise' e 'Conclusão Final'.`;
              
              messages.push({ role: 'user', content: userPromptText });
            }
@@ -255,9 +257,9 @@ export default function Home() {
         
         resultText = isLocal ? data.choices?.[0]?.message?.content : data.text;
         
-      } catch (err: any) {
+      } catch (err: unknown) {
         hasError = true;
-        errorMsg = err.message || "Falha na requisição";
+        errorMsg = err instanceof Error ? err.message : "Falha na requisição";
       }
 
       const durationMs = Date.now() - startTime;
@@ -304,6 +306,7 @@ export default function Home() {
         
         {/* Global Modals / Sidebars */}
         <SettingsSidebar isOpen={isSettingsOpen} onClose={() => setSettingsOpen(false)} />
+        <PreflightModal />
 
         {/* Main Input Area */}
         <InputArea />

@@ -51,8 +51,8 @@ export async function POST(req: NextRequest) {
               throw new Error("O limite de requisições gratuitas da API do Gemini foi atingido (Quota Excedida). Aguarde alguns minutos ou adicione créditos de faturamento.");
            }
            errText = errObj.error?.message || errText;
-        } catch(e: any) {
-           if (e.message.includes("sobrecarregado") || e.message.includes("limite de requisições")) throw e;
+        } catch(e: unknown) {
+           if (e instanceof Error && (e.message.includes("sobrecarregado") || e.message.includes("limite de requisições"))) throw e;
         }
         throw new Error(`Gemini Error: ${errText}`);
       }
@@ -91,8 +91,8 @@ export async function POST(req: NextRequest) {
               throw new Error("Saldo insuficiente ou limite de tokens atingido na OpenRouter para utilizar este modelo Premium.");
            }
            errText = errObj.error?.message || errText;
-        } catch(e: any) {
-           if (e.message.includes("Saldo insuficiente")) throw e;
+        } catch(e: unknown) {
+           if (e instanceof Error && e.message.includes("Saldo insuficiente")) throw e;
         }
         throw new Error(`OpenRouter Error: ${errText}`);
       }
@@ -127,8 +127,8 @@ export async function POST(req: NextRequest) {
           if (res.status === 401) throw new Error("PERPLEXITY_API_KEY inválida.");
           if (res.status === 429) throw new Error("Limite de requisições Perplexity atingido. Aguarde.");
           errText = errObj.error?.message || errObj.detail || errText;
-        } catch (e: any) {
-          if (e.message.includes("PERPLEXITY") || e.message.includes("Limite")) throw e;
+        } catch (e: unknown) {
+          if (e instanceof Error && (e.message.includes("PERPLEXITY") || e.message.includes("Limite"))) throw e;
         }
         throw new Error(`Perplexity Error: ${errText}`);
       }
@@ -165,8 +165,8 @@ export async function POST(req: NextRequest) {
             throw new Error("Sem créditos na API OpenAI. Acesse platform.openai.com/settings/billing");
           }
           errText = errObj.error?.message || errText;
-        } catch (e: any) {
-          if (e.message.includes("OPENAI") || e.message.includes("créditos")) throw e;
+        } catch (e: unknown) {
+          if (e instanceof Error && (e.message.includes("OPENAI") || e.message.includes("créditos"))) throw e;
         }
         throw new Error(`OpenAI Error: ${errText}`);
       }
@@ -196,10 +196,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ text: resultText });
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Judge Route Error:", err);
     return NextResponse.json(
-      { error: err.message || "Erro interno no servidor" },
+      { error: err instanceof Error ? err.message : "Erro interno no servidor" },
       { status: 500 }
     );
   }

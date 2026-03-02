@@ -16,7 +16,7 @@ export async function GET() {
     
     const data = await res.json();
     return NextResponse.json({ models: data.data || [] });
-  } catch (error) {
+  } catch {
     // Silently ignore if local server doesn't respond
     return NextResponse.json({ models: [] });
   }
@@ -55,8 +55,8 @@ export async function POST(req: Request) {
 
     const data = await res.json();
     return NextResponse.json(data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Local Proxy Error:", error);
-    return NextResponse.json({ error: error.message || "Erro de proxy local" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Erro de proxy local" }, { status: 500 });
   }
 }

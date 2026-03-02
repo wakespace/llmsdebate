@@ -22,9 +22,9 @@ export default function EditPersonaPage() {
       router.replace("/");
       return;
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setName(existingPersona.name);
     setDescription(existingPersona.description);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, personas, router]);
 
   const handleSave = (e: React.FormEvent) => {

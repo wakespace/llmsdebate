@@ -107,9 +107,9 @@ export async function POST() {
         resolve();
       });
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     activeSessions.delete(state);
-    return NextResponse.json({ error: err.message || 'Falha ao iniciar servidor de autenticação' }, { status: 500 });
+    return NextResponse.json({ error: err instanceof Error ? err.message : 'Falha ao iniciar servidor de autenticação' }, { status: 500 });
   }
 
   // Build the authorization URL — EXACT same parameters as pi-ai/openai-codex.ts

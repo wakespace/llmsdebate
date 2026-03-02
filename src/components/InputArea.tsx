@@ -5,7 +5,7 @@ import { BrainCircuit, Settings2, Play, RefreshCw, AlertCircle, HelpCircle, Save
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 
-import { ALL_MODELS, getModelProvider } from "@/lib/models";
+import { getModelProvider } from "@/lib/models";
 import registryData from "@/data/models_registry.json";
 
 export function InputArea() {
@@ -14,7 +14,7 @@ export function InputArea() {
     summarizationEnabled, setSummarizationEnabled, 
     status, startDeliberation, startNextRound, reset,
     systemPrompt, setSystemPrompt, responses,
-    selectedResponseIds, roundPrompt, setRoundPrompt,
+    roundPrompt, setRoundPrompt,
     activeModelsIds, setSettingsOpen
   } = useDeliberationStore();
 
@@ -39,11 +39,11 @@ export function InputArea() {
       .then(res => res.json())
       .then(data => {
         if (data.models && Array.isArray(data.models)) {
-          const chatModels = data.models.filter((m: any) => 
+          const chatModels = data.models.filter((m: { id: string }) => 
             !m.id.toLowerCase().includes('embedding') && 
             !m.id.toLowerCase().includes('text-embed')
           );
-          const mapped = chatModels.map((m: any) => ({
+          const mapped = chatModels.map((m: { id: string }) => ({
             id: `local/${m.id}`,
             name: `${m.id} (Local)`
           }));

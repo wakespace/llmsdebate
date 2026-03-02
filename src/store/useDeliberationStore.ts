@@ -81,6 +81,9 @@ interface State {
   isJudging: boolean;
   activeModelsIds: string[];
   isSettingsOpen: boolean; // Controls Settings sidebar
+  isConfirmModalOpen: boolean;
+  pendingSystemPrompt: string;
+  pendingAction: 'start' | 'next' | null;
   
   // Personas State
   personas: Persona[];
@@ -97,6 +100,8 @@ interface State {
   setSummarizationEnabled: (enabled: boolean) => void;
   startDeliberation: (draftSystemPrompt?: string) => void;
   startNextRound: (draftSystemPrompt?: string) => void;
+  confirmDeliberation: () => void;
+  cancelDeliberation: () => void;
   endDeliberation: (synthesisResult: string) => void;
   endWithFullTranscript: () => void;
   setColumnStatus: (modelId: string, status: ColumnStatus) => void;
@@ -140,6 +145,9 @@ export const useDeliberationStore = create<State>()(
       selectedResponseIds: [],
       isJudging: false,
       isSettingsOpen: false,
+      isConfirmModalOpen: false,
+      pendingSystemPrompt: '',
+      pendingAction: null,
 
       // Personas Initial State
       hasSeededPersonas: false,
@@ -174,34 +182,54 @@ export const useDeliberationStore = create<State>()(
 
       startDeliberation: (draftSystemPrompt?: string) => set((state) => {
         if (!state.prompt.trim() || state.selectedModels.length === 0) return state;
-        
-        const newColumnStatus: Record<string, ColumnStatus> = {};
-        state.selectedModels.forEach(m => newColumnStatus[m] = 'loading');
-        
-        return { 
-          status: 'deliberating', 
-          round: 1, 
-          responses: [],
-          columnStatus: newColumnStatus,
-          synthesisResult: null,
-          roundPrompt: '', // clear for next round
-          activeSystemPrompt: draftSystemPrompt || state.systemPrompt,
+        return {
+          isConfirmModalOpen: true,
+          pendingAction: 'start',
+          pendingSystemPrompt: draftSystemPrompt || state.systemPrompt,
         };
       }),
 
       startNextRound: (draftSystemPrompt?: string) => set((state) => {
         if (state.selectedModels.length === 0) return state;
-        
+        return {
+          isConfirmModalOpen: true,
+          pendingAction: 'next',
+          pendingSystemPrompt: draftSystemPrompt || state.systemPrompt,
+        };
+      }),
+
+      confirmDeliberation: () => set((state) => {
         const newColumnStatus: Record<string, ColumnStatus> = {};
         state.selectedModels.forEach(m => newColumnStatus[m] = 'loading');
+        
+        if (state.pendingAction === 'start') {
+          return {
+            isConfirmModalOpen: false,
+            status: 'deliberating',
+            round: 1,
+            responses: [],
+            columnStatus: newColumnStatus,
+            synthesisResult: null,
+            roundPrompt: '',
+            activeSystemPrompt: state.pendingSystemPrompt,
+            pendingAction: null
+          };
+        } else {
+          return {
+            isConfirmModalOpen: false,
+            status: 'deliberating',
+            round: state.round + 1,
+            columnStatus: newColumnStatus,
+            roundPrompt: '',
+            activeSystemPrompt: state.pendingSystemPrompt,
+            pendingAction: null
+          };
+        }
+      }),
 
-        return {
-          status: 'deliberating',
-          round: state.round + 1,
-          columnStatus: newColumnStatus,
-          roundPrompt: '', // clear so user can type new one later
-          activeSystemPrompt: draftSystemPrompt || state.systemPrompt,
-        };
+      cancelDeliberation: () => set({ 
+        isConfirmModalOpen: false, 
+        pendingAction: null 
       }),
 
       endDeliberation: (synthesisResult) => set({ 

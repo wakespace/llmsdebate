@@ -96,7 +96,7 @@ export async function GET(req: NextRequest) {
 
     return response;
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('OAuth callback error:', err);
     return NextResponse.redirect(new URL('/?auth_error=network_error', req.url));
   }

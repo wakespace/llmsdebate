@@ -21,9 +21,11 @@ export async function GET() {
 
     const data = await res.json();
     
+    type OpenRouterModel = { id: string; pricing?: { prompt: string | number; completion: string | number } };
+    
     // Filter models where prompt and completion pricing are both exactly '0' or 0
     const freeModels = data.data
-      .filter((model: any) => {
+      .filter((model: OpenRouterModel) => {
         const p = model.pricing;
         if (!p) return false;
         // Pricing can be string "0" or number 0
@@ -31,7 +33,7 @@ export async function GET() {
         const isCompletionFree = p.completion === 0 || p.completion === "0";
         return isPromptFree && isCompletionFree;
       })
-      .map((model: any) => model.id);
+      .map((model: OpenRouterModel) => model.id);
 
     cachedFreeModels = {
       ids: freeModels,
@@ -39,7 +41,7 @@ export async function GET() {
     };
 
     return NextResponse.json({ freeModels });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Failed to fetch OpenRouter pricing:", err);
     // If we fail but have stale cache, return it
     if (cachedFreeModels) {

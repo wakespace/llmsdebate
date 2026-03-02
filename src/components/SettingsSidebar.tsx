@@ -8,7 +8,7 @@ import { ProviderAccordion } from "./ProviderAccordion";
 import Link from "next/link";
 
 export function SettingsSidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const { activeModelsIds, toggleActiveModel, personas, activePersonasIds, toggleActivePersona } = useDeliberationStore();
+  const { personas, activePersonasIds, toggleActivePersona } = useDeliberationStore();
   const [activeTab, setActiveTab] = useState("models");
 
   // Prevent scrolling on background when sidebar is open

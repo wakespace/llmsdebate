@@ -3,20 +3,32 @@ export const maxDuration = 60; // Ensures the host doesn't kill the request quic
 import { NextRequest, NextResponse } from 'next/server';
 import { ALL_MODELS } from '@/lib/models';
 
+interface PreviousResponse {
+  modelId: string;
+  modelName: string;
+  round: number | string;
+  text: string;
+}
+
+interface RequestBody {
+  prompt: string;
+  round: number;
+  model: string;
+  previousResponses?: PreviousResponse[];
+  systemPrompt?: string;
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { prompt, round, model, previousResponses, systemPrompt: clientSystemPrompt } = body;
+    const { prompt, round, model, previousResponses = [], systemPrompt: clientSystemPrompt } = await req.json() as RequestBody;
 
-    if (!prompt || !model) {
+    if (!prompt || typeof prompt !== 'string' || !model || typeof model !== 'string') {
       return NextResponse.json({ error: 'Valores obrigatórios ausentes' }, { status: 400 });
     }
 
-    // Prepare history and system instructions
-    let messages = [];
-
     // System Prompt from client (or default)
-    const systemPrompt = clientSystemPrompt || "Você é um especialista participando num Sistema de Deliberação Assistida por LLMs. Responda SEMPRE em Português do Brasil. IMPORTANTE: Estruture a sua resposta usando EXATAMENTE duas marcações Markdown: '## Análise' e '## Conclusão Final'. Seja claro, estruturado e profissional.";
+    const defaultSystemPrompt = "Você é um especialista participando num Sistema de Deliberação Assistida por LLMs. Responda SEMPRE em Português do Brasil. IMPORTANTE: Estruture a sua resposta usando EXATAMENTE duas marcações Markdown: '## Análise' e '## Conclusão Final'. Seja claro, estruturado e profissional.";
+    const systemPrompt = clientSystemPrompt || defaultSystemPrompt;
     
     const modelInfo = ALL_MODELS.find(m => m.id === model);
     let personaAddon = "";
@@ -25,23 +37,16 @@ export async function POST(req: NextRequest) {
     }
     const finalSystemPrompt = systemPrompt + personaAddon;
 
+    // Prepare history and system instructions
+    const messages: { role: string; content: string }[] = [];
     messages.push({ role: 'system', content: finalSystemPrompt });
 
     if (round === 1) {
       messages.push({ role: 'user', content: prompt });
     } else {
-      let myPreviousResponse = null;
-      let otherResponsesText = "";
-
-      if (Array.isArray(previousResponses)) {
-        myPreviousResponse = previousResponses.find((r: any) => r.modelId === model);
-        const otherResponses = previousResponses.filter((r: any) => r.modelId !== model);
-        otherResponsesText = otherResponses.map((r: any) => `[${r.modelName} - Rodada ${r.round}]:\n${r.text}`).join('\n\n');
-      }
-
-      const contextualPrompt = `Problema original: ${prompt}\n\nNa rodada anterior, esta foi a sua posição:\n${myPreviousResponse ? myPreviousResponse.text : 'Nenhuma'}\n\nEstas foram as perspectivas válidas apresentadas pelos seus colegas nas rodadas anteriores:\n${otherResponsesText || 'Nenhuma'}\n\nReflita honestamente sobre a sua posição face às dos seus colegas. Se percebe convergência, reconheça e complemente com detalhes práticos. Se percebe divergência, avalie se está errado, parcialmente errado ou se ainda faz sentido manter a sua posição. É perfeitamente aceitável mudar de ideia, fundir ideias ou discordar educadamente justificando o porquê. Evite repetir o que já foi dito — foque-se em agregar clareza ou aprofundar a análise.`;
-      
-      messages.push({ role: 'user', content: contextualPrompt });
+      const hText = previousResponses.map((r: PreviousResponse) => `[${r.modelName} - Rodada ${r.round}]:\n${r.text}`).join('\n\n');
+      const userPromptText = `Problema original: ${prompt}\n\nResumo das perspetivas anteriores:\n${hText}\n\nReflita sobre as perspetivas acima. Estruture sua resposta em 'Análise' e 'Conclusão Final'.`;
+      messages.push({ role: 'user', content: userPromptText });
     }
 
     // Dispatch to the correct provider
@@ -52,16 +57,16 @@ export async function POST(req: NextRequest) {
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) throw new Error("GEMINI_API_KEY não configurada");
       
-      // Map OpenAI format to Gemini format natively or use generic endpoint 
-      // For simplicity using raw REST Call to Gemini API format.
-      const geminiMessages = messages.map(m => ({
-        role: m.role === 'user' ? 'user' : 'model',
-        parts: [{text: m.content}]
-      }));
-      // Gemini 3.1 Pro Preview may use the same formatting as Gemini 1.5 Pro via REST Call
+      // Gemini needs alternating roles context, better structure
+      const geminiContents = previousResponses.flatMap((r: PreviousResponse) => [
+        { role: "user", parts: [{ text: `[Histórico - ${r.modelName} Rodada ${r.round}]:\n${r.text}` }] },
+        { role: "model", parts: [{ text: r.text }] } // Assuming previous responses are from models
+      ]);
+      geminiContents.push({ role: "user", parts: [{ text: round === 1 ? prompt : `Problema original: ${prompt}\n\nAja como um dos juizes avaliadores desse painel, continue a deliberação considerando o histórico fornecido e produza sua nova Análise e Conclusão Final.` }] });
+
       const payload = {
         systemInstruction: { parts: [{ text: finalSystemPrompt }] },
-        contents: [{ role: "user", parts: [{ text: messages.filter(m => m.role !== 'system').map(m => m.content).join('\n') }] }]
+        contents: geminiContents
       };
 
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
@@ -82,8 +87,8 @@ export async function POST(req: NextRequest) {
               throw new Error("O limite de requisições gratuitas da API do Gemini foi atingido (Quota Excedida). Aguarde alguns minutos ou adicione créditos de faturamento.");
            }
            errText = errObj.error?.message || errText;
-        } catch(e: any) {
-           if (e.message.includes("sobrecarregado") || e.message.includes("limite de requisições")) throw e;
+        } catch(e: unknown) {
+           if (e instanceof Error && (e.message.includes("sobrecarregado") || e.message.includes("limite de requisições"))) throw e;
         }
         throw new Error(`Gemini Error: ${errText}`);
       }
@@ -122,8 +127,8 @@ export async function POST(req: NextRequest) {
               throw new Error("Saldo insuficiente ou limite de tokens atingido na OpenRouter para utilizar este modelo Premium.");
            }
            errText = errObj.error?.metadata?.raw || errObj.error?.message || errText;
-        } catch(e: any) {
-           if (e.message.includes("Saldo insuficiente")) throw e;
+        } catch(e: unknown) {
+           if (e instanceof Error && e.message.includes("Saldo insuficiente")) throw e;
         }
 
         if (typeof errText === 'string' && errText.includes('rate-limited upstream')) {
@@ -164,8 +169,8 @@ export async function POST(req: NextRequest) {
           if (res.status === 401) throw new Error("PERPLEXITY_API_KEY inválida.");
           if (res.status === 429) throw new Error("Limite de requisições Perplexity atingido. Aguarde.");
           errText = errObj.error?.message || errObj.detail || errText;
-        } catch (e: any) {
-          if (e.message.includes("PERPLEXITY") || e.message.includes("Limite")) throw e;
+        } catch (e: unknown) {
+          if (e instanceof Error && (e.message.includes("PERPLEXITY") || e.message.includes("Limite"))) throw e;
         }
         throw new Error(`Perplexity Error (${res.status}): ${errText}`);
       }
@@ -203,8 +208,8 @@ export async function POST(req: NextRequest) {
             throw new Error("Sem créditos na API OpenAI. Acesse platform.openai.com/settings/billing");
           }
           errText = errObj.error?.message || errText;
-        } catch (e: any) {
-          if (e.message.includes("OPENAI") || e.message.includes("créditos")) throw e;
+        } catch (e: unknown) {
+          if (e instanceof Error && (e.message.includes("OPENAI") || e.message.includes("créditos"))) throw e;
         }
         throw new Error(`OpenAI Error (${res.status}): ${errText}`);
       }
@@ -234,11 +239,11 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ text: resultText });
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Deliberation Error:", error);
-    if (error.name === 'AbortError' || error.message.includes('timeout')) {
+    if (error instanceof Error && (error.name === 'AbortError' || error.message.includes('timeout'))) {
        return NextResponse.json({ error: "O modelo demorou muito a responder (Timeout de 60s excedido)." }, { status: 504 });
     }
-    return NextResponse.json({ error: error.message || "Erro desconhecido" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Erro desconhecido" }, { status: 500 });
   }
 }

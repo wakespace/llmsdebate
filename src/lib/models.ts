@@ -3,6 +3,7 @@ export interface ModelInfo {
   name: string;
   provider: string;
   free: boolean;
+  contextLength?: number;
   description: string;
   strengths: string[];
   costTier: 'grátis' | 'barato' | 'moderado' | 'caro';

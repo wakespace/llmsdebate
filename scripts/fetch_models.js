@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
 const path = require('path');
 
 const REGISTRY_PATH = path.join(__dirname, '../src/data/models_registry.json');
-const MODELS_TS_PATH = path.join(__dirname, '../src/lib/models.ts');
 
 // Static fallback or standard premium models that are not easily fetched dynamically without individual admin keys
 const FIXED_PREMIUM_MODELS = [
@@ -11,6 +11,7 @@ const FIXED_PREMIUM_MODELS = [
     name: "GPT-5.2 High",
     provider: "openai",
     free: false,
+    contextLength: 128000,
     description: "Extremamente competente com matemática/lógica universal e top de linha na análise de dados.",
     strengths: ["Matemática", "Lógica universal", "Análise de dados"],
     costTier: "caro"
@@ -20,6 +21,7 @@ const FIXED_PREMIUM_MODELS = [
     name: "GPT-5.2 Codex",
     provider: "openai",
     free: false,
+    contextLength: 128000,
     description: "Liderança absoluta no universo de código e otimização para engenharia de software.",
     strengths: ["Universo de código", "Engenharia de software", "Refatoração massiva"],
     costTier: "caro"
@@ -29,6 +31,7 @@ const FIXED_PREMIUM_MODELS = [
     name: "Gemini 3 Pro Preview",
     provider: "gemini",
     free: false,
+    contextLength: 1048576,
     description: "Rei inquestionável do contexto longo (1 milhão de tokens) e fluência multimodal invejável.",
     strengths: ["Contexto colossal", "Fluência multimodal", "Compreende vídeos e UIs"],
     costTier: "caro"
@@ -38,6 +41,7 @@ const FIXED_PREMIUM_MODELS = [
     name: "Gemini 3 Flash Preview",
     provider: "gemini",
     free: true,
+    contextLength: 1048576,
     description: "Custo excepcional com raciocínio brilhante para seguimento de instruções em janela de 1M tokens.",
     strengths: ["Custo excepcional", "Seguimento de instruções", "Processamento rápido"],
     costTier: "grátis"
@@ -47,6 +51,7 @@ const FIXED_PREMIUM_MODELS = [
     name: "Sonar Deep Research",
     provider: "perplexity",
     free: false,
+    contextLength: 128000,
     description: "O melhor para varreduras exaustivas da web, combinando raciocínio robusto de ponta a ponta.",
     strengths: ["Varreduras exaustivas da web", "Buscas ativas com lógica acoplada"],
     costTier: "caro"
@@ -56,6 +61,7 @@ const FIXED_PREMIUM_MODELS = [
     name: "Sonar Pro",
     provider: "perplexity",
     free: false,
+    contextLength: 128000,
     description: "Edição voltada a respostas rápidas fundamentadas por links exatos da web.",
     strengths: ["Busca veloz com precisão de links", "Alta ancoragem"],
     costTier: "moderado"
@@ -121,7 +127,6 @@ async function updateRegistry() {
       // Calculate intelligence heuristic score
       let rankScore = 0;
       const idLower = m.id.toLowerCase();
-      const nameLower = m.name.toLowerCase();
 
       // Tier 5 (State of the art / Heavy open weights)
       if (idLower.includes('llama-3.3') || idLower.includes('70b') || idLower.includes('72b') || idLower.includes('r1') || idLower.includes('deepseek') || idLower.includes('nemotron') || idLower.includes('mixtral-8x22b')) {
@@ -153,12 +158,15 @@ async function updateRegistry() {
 
       // Discover strengths from text
       const intelligentTags = generateTags(translatedDescription + " " + m.id);
+      
+      const contextLength = m.context_length || 4096;
 
       openRouterModels.push({
         id: `openrouter/${m.id}`,
         name: cleanName,
         provider: "openrouter",
         free: true,
+        contextLength,
         description: translatedDescription,
         strengths: intelligentTags,
         costTier: "grátis",
@@ -191,6 +199,7 @@ async function updateRegistry() {
         name: "Llama 3 8B (LM Studio)",
         provider: "local",
         free: true,
+        contextLength: 8192,
         description: "Roda 100% offline no seu LM Studio localhost:1234",
         strengths: ["Privacidade total", "Offline"],
         costTier: "grátis"

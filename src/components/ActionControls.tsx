@@ -7,7 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { ALL_MODELS } from "@/lib/models";
 
 export function ActionControls() {
-  const { status, round, responses, selectedModels, startNextRound, endDeliberation, endWithFullTranscript, synthesisResult, fullTranscriptResult, clearSynthesis, clearFullTranscript, selectedResponseIds, toggleResponseSelection, selectAllResponses, clearResponseSelection, requestJudgeSynthesis, isJudging } = useDeliberationStore();
+  const { status, round, responses, selectedModels, startNextRound, endWithFullTranscript, synthesisResult, fullTranscriptResult, clearSynthesis, clearFullTranscript, selectedResponseIds, selectAllResponses, clearResponseSelection, requestJudgeSynthesis, isJudging } = useDeliberationStore();
   const [synthesisModel, setSynthesisModel] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
