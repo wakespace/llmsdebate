@@ -201,7 +201,12 @@ export function ActionControls() {
             className="bg-black/20 border border-white/10 text-zinc-300 text-sm rounded-xl px-4 py-3 focus:ring-white/30 focus:border-white/30 outline-none max-w-[220px] shadow-inner disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed backdrop-blur-md"
           >
             <option value="" disabled>Sintetizar com...</option>
-            {ALL_MODELS.map(m => (
+            {ALL_MODELS.filter(m => {
+              const isFree = m.free === true;
+              const hasImmenseContext = (m.contextLength ?? 0) >= 1000000;
+              const isThinking = m.id.toLowerCase().includes('thinking') || m.name.toLowerCase().includes('thinking') || m.strengths.some(s => s.toLowerCase().includes('thinking') || s.toLowerCase().includes('pensamento'));
+              return isFree || hasImmenseContext || isThinking;
+            }).map(m => (
               <option key={m.id} value={m.id}>{m.name}</option>
             ))}
           </select>
