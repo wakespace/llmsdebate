@@ -1,4 +1,4 @@
-export const maxDuration = 60; // Ensures the host doesn't kill the request quickly
+export const maxDuration = 300; // 5 minutos (Vercel Pro/Local)
 
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(55000)
+        signal: AbortSignal.timeout(290000)
       });
       
       if (!res.ok) {
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
           model: modelId,
           messages: messages
         }),
-        signal: AbortSignal.timeout(55000)
+        signal: AbortSignal.timeout(290000)
       });
 
       if (!res.ok) {
@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
           model: modelId,
           messages: messages,
         }),
-        signal: AbortSignal.timeout(55000)
+        signal: AbortSignal.timeout(290000)
       });
 
       if (!res.ok) {
@@ -153,7 +153,7 @@ export async function POST(req: NextRequest) {
           model: modelId,
           messages: messages,
         }),
-        signal: AbortSignal.timeout(55000)
+        signal: AbortSignal.timeout(290000)
       });
 
       if (!res.ok) {
@@ -186,7 +186,7 @@ export async function POST(req: NextRequest) {
           model: modelId,
           messages: messages
         }),
-        signal: AbortSignal.timeout(55000)
+        signal: AbortSignal.timeout(290000)
       });
 
       if (!res.ok) throw new Error(`Local Server Error: ${await res.text()}`);

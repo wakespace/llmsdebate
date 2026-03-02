@@ -1,4 +1,4 @@
-export const maxDuration = 60; // Ensures the host doesn't kill the request quickly
+export const maxDuration = 300; // 5 minutos (Vercel Pro/Local)
 
 import { NextRequest, NextResponse } from 'next/server';
 import { ALL_MODELS } from '@/lib/models';
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(55000)
+        signal: AbortSignal.timeout(290000)
       });
       
       if (!res.ok) {
@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
           model: modelId,
           messages: messages
         }),
-        signal: AbortSignal.timeout(55000)
+        signal: AbortSignal.timeout(290000)
       });
 
       if (!res.ok) {
@@ -158,7 +158,7 @@ export async function POST(req: NextRequest) {
           model: modelId,
           messages: messages,
         }),
-        signal: AbortSignal.timeout(55000)
+        signal: AbortSignal.timeout(290000)
       });
 
       if (!res.ok) {
@@ -195,7 +195,7 @@ export async function POST(req: NextRequest) {
           model: modelId,
           messages: messages,
         }),
-        signal: AbortSignal.timeout(55000)
+        signal: AbortSignal.timeout(290000)
       });
 
       if (!res.ok) {
@@ -229,7 +229,7 @@ export async function POST(req: NextRequest) {
           model: modelId,
           messages: messages
         }),
-        signal: AbortSignal.timeout(55000)
+        signal: AbortSignal.timeout(290000)
       });
 
       if (!res.ok) throw new Error(`Local Server Error: ${await res.text()}`);
@@ -242,7 +242,7 @@ export async function POST(req: NextRequest) {
   } catch (error: unknown) {
     console.error("Deliberation Error:", error);
     if (error instanceof Error && (error.name === 'AbortError' || error.message.includes('timeout'))) {
-       return NextResponse.json({ error: "O modelo demorou muito a responder (Timeout de 60s excedido)." }, { status: 504 });
+       return NextResponse.json({ error: "O modelo demorou muito a responder (Timeout de 5 minutos excedido)." }, { status: 504 });
     }
     return NextResponse.json({ error: error instanceof Error ? error.message : "Erro desconhecido" }, { status: 500 });
   }
