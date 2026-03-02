@@ -3,6 +3,13 @@ import { persist } from 'zustand/middleware';
 
 export const DEFAULT_SYSTEM_PROMPT = "Você é um especialista participando num Sistema de Deliberação Assistida por LLMs. Responda SEMPRE em Português do Brasil. IMPORTANTE: Estruture a sua resposta usando EXATAMENTE duas marcações Markdown: '## Análise' e '## Conclusão Final'. Seja claro, estruturado e profissional.";
 
+export interface SystemPrompt {
+  id: string;
+  name: string;
+  content: string;
+  category: 'initial' | 'round';
+}
+
 export interface DeliberationResponse {
   id: string; // unique per response
   round: number;
@@ -67,8 +74,7 @@ interface State {
   // Personas State
   hasSeededPersonas: boolean;
   prompt: string;
-  systemPrompt: string; // Persisted
-  activeSystemPrompt: string; // Used for the current run (might be draft)
+  activeSystemPrompt: string; // Used for the prompt: string;
   roundPrompt: string;
   round: number;
   responses: DeliberationResponse[];
@@ -80,11 +86,21 @@ interface State {
   fullTranscriptResult: string | null;
   selectedResponseIds: string[];
   isJudging: boolean;
+  
+  // Synthesis Preflight
+  isSynthesisModalOpen: boolean;
+  pendingSynthesisModelId: string | null;
   activeModelsIds: string[];
   isSettingsOpen: boolean; // Controls Settings sidebar
   isConfirmModalOpen: boolean;
   pendingSystemPrompt: string;
   pendingAction: 'start' | 'next' | null;
+  
+  // Prompts State
+  hasSeededPrompts: boolean;
+  systemPrompts: SystemPrompt[];
+  activeInitialPromptId: string;
+  activeRoundPromptId: string;
   
   // Personas State
   personas: Persona[];
@@ -94,8 +110,7 @@ interface State {
   // Actions
   setSettingsOpen: (open: boolean) => void;
   setPrompt: (prompt: string) => void;
-  setSystemPrompt: (systemPrompt: string) => void;
-  setRoundPrompt: (roundPrompt: string) => void;
+  setRoundPrompt: (prompt: string) => void;
   toggleModel: (modelId: string) => void;
   toggleActiveModel: (modelId: string) => void;
   setSummarizationEnabled: (enabled: boolean) => void;
@@ -105,6 +120,9 @@ interface State {
   cancelDeliberation: () => void;
   endDeliberation: (synthesisResult: string) => void;
   endWithFullTranscript: () => void;
+  
+  openSynthesisModal: (modelId: string) => void;
+  cancelSynthesisModal: () => void;
   setColumnStatus: (modelId: string, status: ColumnStatus) => void;
   addResponse: (response: DeliberationResponse) => void;
   toggleResponseSelection: (id: string) => void;
@@ -114,6 +132,12 @@ interface State {
   clearFullTranscript: () => void;
   reset: () => void;
   requestJudgeSynthesis: (judgeModelId: string) => Promise<void>;
+
+  // Prompts Actions
+  addSystemPrompt: (prompt: Omit<SystemPrompt, 'id'>) => void;
+  updateSystemPrompt: (id: string, data: Partial<SystemPrompt>) => void;
+  deleteSystemPrompt: (id: string) => void;
+  setActivePrompt: (id: string, category: 'initial' | 'round') => void;
 
   // Personas Actions
   addPersona: (persona: Persona) => void;
@@ -127,7 +151,6 @@ export const useDeliberationStore = create<State>()(
   persist(
     (set, get) => ({
       prompt: '',
-      systemPrompt: DEFAULT_SYSTEM_PROMPT,
       activeSystemPrompt: DEFAULT_SYSTEM_PROMPT,
       roundPrompt: '',
       round: 1,
@@ -145,10 +168,19 @@ export const useDeliberationStore = create<State>()(
       fullTranscriptResult: null,
       selectedResponseIds: [],
       isJudging: false,
+      
+      isSynthesisModalOpen: false,
+      pendingSynthesisModelId: null,
       isSettingsOpen: false,
       isConfirmModalOpen: false,
       pendingSystemPrompt: '',
       pendingAction: null,
+
+      // Prompts Initial State
+      hasSeededPrompts: false,
+      systemPrompts: [],
+      activeInitialPromptId: 'default-initial',
+      activeRoundPromptId: 'default-round',
 
       // Personas Initial State
       hasSeededPersonas: false,
@@ -159,7 +191,6 @@ export const useDeliberationStore = create<State>()(
       // Actions
       setSettingsOpen: (open) => set({ isSettingsOpen: open }),
       setPrompt: (prompt) => set({ prompt }),
-      setSystemPrompt: (systemPrompt) => set({ systemPrompt }),
       setRoundPrompt: (roundPrompt: string) => set({ roundPrompt }),
       
       toggleModel: (modelId) => set((state) => {
@@ -186,7 +217,7 @@ export const useDeliberationStore = create<State>()(
         return {
           isConfirmModalOpen: true,
           pendingAction: 'start',
-          pendingSystemPrompt: draftSystemPrompt || state.systemPrompt,
+          pendingSystemPrompt: draftSystemPrompt || state.systemPrompts.find(p => p.id === state.activeInitialPromptId)?.content || "",
         };
       }),
 
@@ -195,7 +226,7 @@ export const useDeliberationStore = create<State>()(
         return {
           isConfirmModalOpen: true,
           pendingAction: 'next',
-          pendingSystemPrompt: draftSystemPrompt || state.systemPrompt,
+          pendingSystemPrompt: draftSystemPrompt || state.systemPrompts.find(p => p.id === state.activeRoundPromptId)?.content || "",
         };
       }),
 
@@ -237,6 +268,16 @@ export const useDeliberationStore = create<State>()(
         status: 'completed',
         synthesisResult,
         columnStatus: {}
+      }),
+      
+      openSynthesisModal: (modelId: string) => set({
+        isSynthesisModalOpen: true,
+        pendingSynthesisModelId: modelId
+      }),
+      
+      cancelSynthesisModal: () => set({
+        isSynthesisModalOpen: false,
+        pendingSynthesisModelId: null
       }),
 
       endWithFullTranscript: () => set((state) => {
@@ -397,13 +438,37 @@ export const useDeliberationStore = create<State>()(
            newMapping[modelId] = personaId;
         }
         return { modelPersonas: newMapping };
+      }),
+
+      // Prompts Implementation
+      addSystemPrompt: (prompt) => set((state) => {
+        const newPrompt = { ...prompt, id: `prompt-${Date.now()}` };
+        return { systemPrompts: [...state.systemPrompts, newPrompt] };
+      }),
+      updateSystemPrompt: (id, data) => set((state) => ({
+        systemPrompts: state.systemPrompts.map(p => p.id === id ? { ...p, ...data } : p)
+      })),
+      deleteSystemPrompt: (id) => set((state) => {
+        const newPrompts = state.systemPrompts.filter(p => p.id !== id);
+        let newInitial = state.activeInitialPromptId;
+        let newRound = state.activeRoundPromptId;
+        if (newInitial === id) {
+          newInitial = newPrompts.find(p => p.category === 'initial')?.id || '';
+        }
+        if (newRound === id) {
+          newRound = newPrompts.find(p => p.category === 'round')?.id || '';
+        }
+        return { systemPrompts: newPrompts, activeInitialPromptId: newInitial, activeRoundPromptId: newRound };
+      }),
+      setActivePrompt: (id, category) => set(() => {
+        if (category === 'initial') return { activeInitialPromptId: id };
+        return { activeRoundPromptId: id };
       })
     }),
     {
       name: 'llm-deliberation-storage',
       partialize: (state) => ({ 
         prompt: state.prompt,
-        systemPrompt: state.systemPrompt,
         roundPrompt: state.roundPrompt,
         round: state.round,
         responses: state.responses,
@@ -416,7 +481,11 @@ export const useDeliberationStore = create<State>()(
         hasSeededPersonas: state.hasSeededPersonas,
         personas: state.personas,
         activePersonasIds: state.activePersonasIds,
-        modelPersonas: state.modelPersonas
+        modelPersonas: state.modelPersonas,
+        hasSeededPrompts: state.hasSeededPrompts,
+        systemPrompts: state.systemPrompts,
+        activeInitialPromptId: state.activeInitialPromptId,
+        activeRoundPromptId: state.activeRoundPromptId
       }),
       onRehydrateStorage: () => () => {
         setTimeout(() => {
@@ -432,6 +501,35 @@ export const useDeliberationStore = create<State>()(
                 hasSeededPersonas: true,
                 personas: [...state.personas, ...missingPersonas],
                 activePersonasIds: [...new Set([...state.activePersonasIds, ...missingPersonas.map(p => p.id)])]
+             });
+          }
+
+          if (!state.hasSeededPrompts || state.systemPrompts.length === 0) {
+             const defaultInitial: SystemPrompt = {
+               id: 'default-initial',
+               name: 'Prompt Inicial Padrão',
+               category: 'initial',
+               content: DEFAULT_SYSTEM_PROMPT
+             };
+             const defaultRound: SystemPrompt = {
+               id: 'default-round',
+               name: 'Inclusão de Histórico e Consenso de Rodada',
+               category: 'round',
+               content: "Leia com atenção as soluções preliminares submetidas pelos outros especialistas do painel.\n\nInstrução de Debate:\n1. Mantendo a sua identidade e foco de especialista, avalie criticamente as respostas dos seus colegas. O que eles acertaram? O que eles ignoraram que a sua especialidade considera vital?\n2. Discuta abertamente os pontos de discordância.\n3. Utilize a opinião dos outros agentes como informação adicional valiosa para corrigir as suas próprias falhas.\n4. Sintetize as melhores ideias do grupo e forneça uma resposta atualizada e melhorada para resolver o problema inicial.\n\nEstruture a sua resposta usando EXATAMENTE duas marcações Markdown: '## Análise' e '## Conclusão Final'. Seja claro, estruturado e profissional."
+             };
+             
+             const newPrompts = [...state.systemPrompts];
+             if (!newPrompts.some(p => p.id === 'default-initial')) newPrompts.push(defaultInitial);
+             if (!newPrompts.some(p => p.id === 'default-round')) newPrompts.push(defaultRound);
+
+             const initialId = state.activeInitialPromptId && state.activeInitialPromptId !== '' ? state.activeInitialPromptId : 'default-initial';
+             const roundId = state.activeRoundPromptId && state.activeRoundPromptId !== '' ? state.activeRoundPromptId : 'default-round';
+
+             useDeliberationStore.setState({
+                hasSeededPrompts: true,
+                systemPrompts: newPrompts,
+                activeInitialPromptId: initialId,
+                activeRoundPromptId: roundId
              });
           }
         }, 0);

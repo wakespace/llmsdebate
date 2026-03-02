@@ -15,7 +15,8 @@ Este projeto permite que você envie um _prompt_ e observe dezenas de diferentes
 - **Personas Customizadas (Especialistas):** Crie e atribua "Especialistas" (como Arquiteto, Engenheiro de Qualidade, Product Manager, etc.) aos modelos. O sistema injeta automaticamente o papel e as diretrizes do especialista no *system_prompt* antes do debate, mudando radicalmente os pontos de vista da deliberação.
 - **Juiz Integrado (Judge LLM):** Utiliza um LLM superior como "Juiz" para ler o histórico da deliberação, comparar argumentos, resolver divergências e construir um consenso bem elaborado.
 - **Transcrição e Síntese Final:** Exporte toda a cadeia de raciocínio da deliberação em formato `.MD` com o clique de um botão.
-- **Modelos Locais Offline:** O sistema consegue varrer a porta local para identificar instâncias do seu **LM Studio** e adicionar IAs diretos do seu equipamento (ex: Llama 3, Qwen) como participantes das rodadas de debate grátis e sem latência.
+- **Gestão de Prompts Dinâmicos:** Controle total sobre os *"System Prompts"*, divididos agora em categoria *Initial* (rodada 1) e *Round* (rodadas subsequentes). Personalize o comportamento geral do sistema para cada estágio da deliberação.
+- **Proteção de Carga de Contexto (Preflight Modals):** Pop-ups de confirmação interativos estimam em tempo-real (`char/4`) se a carga de Histórico e Prompts vai estourar a *Context Window* de algum dos especialistas. Contas com validações ativas alertam se é necessário ativar a "Sumarização Automática". O mesmo se aplica ao solicitar a Síntese Final pelo Juiz.
 
 ---
 
@@ -59,10 +60,3 @@ Este projeto permite que você envie um _prompt_ e observe dezenas de diferentes
 ## 🎨 Sobre a Interface
 
 O design foca em imersão com tons escuros profundos inspirados no universo espacial (efeitos glassmorphism, translucidez com desfoque de cenário `backdrop-blur`). As respostas dos especialistas são fragmentadas automaticamente pelo sistema em duas fases visuais obrigatórias: **Análise** e **Conclusão Final**, facilitando a leitura e comparação instantânea do raciocínio analítico com o veredicto daquele modelo para o usuário final.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

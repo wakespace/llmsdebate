@@ -8,6 +8,7 @@ import { ActionControls } from "@/components/ActionControls";
 import { BrainCircuit } from "lucide-react";
 import { SettingsSidebar } from "@/components/SettingsSidebar";
 import { PreflightModal } from "@/components/PreflightModal";
+import { SynthesisPreflightModal } from "@/components/SynthesisPreflightModal";
 import registryData from "@/data/models_registry.json";
 
 // Helper to parse Analysis and Conclusion safely
@@ -306,10 +307,6 @@ export default function Home() {
     <div className="flex min-h-screen bg-zinc-950 w-full relative">
       <main className="flex flex-col flex-1 p-4 md:p-6 lg:p-8 max-w-[1700px] mx-auto w-full gap-6">
         
-        {/* Global Modals / Sidebars */}
-        <SettingsSidebar isOpen={isSettingsOpen} onClose={() => setSettingsOpen(false)} />
-        <PreflightModal />
-
         {/* Main Input Area */}
         <InputArea />
 
@@ -336,6 +333,11 @@ export default function Home() {
 
         {/* Bottom Controls */}
         <ActionControls />
+
+        {/* Global Modals / Sidebars */}
+        <SettingsSidebar isOpen={isSettingsOpen} onClose={() => setSettingsOpen(false)} />
+        <PreflightModal />
+        <SynthesisPreflightModal />
 
       </main>
     </div>

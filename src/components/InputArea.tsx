@@ -13,7 +13,7 @@ export function InputArea() {
     prompt, setPrompt, selectedModels, toggleModel, 
     summarizationEnabled, setSummarizationEnabled, 
     status, startDeliberation, startNextRound, reset,
-    systemPrompt, setSystemPrompt, responses,
+    systemPrompts, activeInitialPromptId, activeRoundPromptId, updateSystemPrompt, responses,
     roundPrompt, setRoundPrompt,
     activeModelsIds, setSettingsOpen
   } = useDeliberationStore();
@@ -23,16 +23,21 @@ export function InputArea() {
   const [openRouterFreeModels, setOpenRouterFreeModels] = useState<string[] | null>(null);
   const [savedSystemPrompt, setSavedSystemPrompt] = useState(false);
   
-  // Local draft of system prompt. Only persists when user clicks Save.
-  const [draftSystemPrompt, setDraftSystemPrompt] = useState(systemPrompt);
+  const isInitialRound = responses.length === 0;
+  const activePromptId = isInitialRound ? activeInitialPromptId : activeRoundPromptId;
+  const activePrompt = useMemo(() => systemPrompts.find(p => p.id === activePromptId), [systemPrompts, activePromptId]);
 
-  // Sync draft when the persistent systemPrompt changes (e.g. on reset or reload)
+  // Local draft of system prompt. Only persists when user clicks Save.
+  const [draftSystemPrompt, setDraftSystemPrompt] = useState(activePrompt?.content || "");
+
+  // Sync draft when the persistent prompt changes (e.g. on reset, reload, or round change)
   useEffect(() => {
-    setDraftSystemPrompt(systemPrompt);
-  }, [systemPrompt]);
+    if (activePrompt) {
+      setDraftSystemPrompt(activePrompt.content);
+    }
+  }, [activePrompt]);
 
   const isDeliberating = status === 'deliberating' || status === 'loading';
-  const isInitialRound = responses.length === 0;
 
   useEffect(() => {
     fetch('/api/local')
@@ -171,7 +176,6 @@ export function InputArea() {
           <button 
             onClick={() => {
               reset();
-              setDraftSystemPrompt(systemPrompt);
             }}
             className="flex items-center gap-2 bg-white/5 hover:bg-white/10 text-zinc-300 px-4 py-2 rounded-lg transition-all text-sm font-medium border border-white/10 hover:border-white/20 hover:shadow-lg active:scale-95 backdrop-blur-md"
           >
@@ -187,7 +191,7 @@ export function InputArea() {
           {/* System Prompt */}
           <div className="relative">
             <label className="text-[11px] font-semibold text-zinc-600 uppercase tracking-widest mb-1.5 block">
-              System Prompt
+              {isInitialRound ? 'Initial System Prompt' : 'Round System Prompt'}
             </label>
             <textarea 
               value={draftSystemPrompt}
@@ -236,11 +240,13 @@ export function InputArea() {
 
             <button
               onClick={() => {
-                setSystemPrompt(draftSystemPrompt);
+                if (activePromptId) {
+                  updateSystemPrompt(activePromptId, { content: draftSystemPrompt });
+                }
                 setSavedSystemPrompt(true);
                 setTimeout(() => setSavedSystemPrompt(false), 2000);
               }}
-              disabled={isDeliberating || draftSystemPrompt === systemPrompt}
+              disabled={isDeliberating || draftSystemPrompt === activePrompt?.content}
               className="px-4 py-3 flex items-center gap-2 bg-black/20 hover:bg-white/5 text-zinc-400 hover:text-white rounded-xl transition-all border border-white/5 hover:border-white/10 text-sm font-medium disabled:opacity-30 disabled:hover:bg-black/20 disabled:hover:text-zinc-400"
             >
               {savedSystemPrompt ? (

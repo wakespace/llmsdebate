@@ -7,7 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { ALL_MODELS } from "@/lib/models";
 
 export function ActionControls() {
-  const { status, round, responses, selectedModels, startNextRound, endWithFullTranscript, synthesisResult, fullTranscriptResult, clearSynthesis, clearFullTranscript, selectedResponseIds, selectAllResponses, clearResponseSelection, requestJudgeSynthesis, isJudging } = useDeliberationStore();
+  const { status, round, responses, selectedModels, startNextRound, endWithFullTranscript, synthesisResult, fullTranscriptResult, clearSynthesis, clearFullTranscript, selectedResponseIds, selectAllResponses, clearResponseSelection, isJudging, openSynthesisModal } = useDeliberationStore();
   const [synthesisModel, setSynthesisModel] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -95,12 +95,12 @@ export function ActionControls() {
     document.body.removeChild(link);
   };
 
-  const handleSynthesize = async () => {
+  const handleSynthesize = () => {
     const targetModel = synthesisModel || activeModels[0] || responses[0]?.modelId;
     if (!targetModel) return;
 
     setDropdownOpen(false);
-    await requestJudgeSynthesis(targetModel);
+    openSynthesisModal(targetModel);
   };
 
   const handleFullTranscript = () => {

@@ -8,7 +8,7 @@ import { ProviderAccordion } from "./ProviderAccordion";
 import Link from "next/link";
 
 export function SettingsSidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const { personas, activePersonasIds, toggleActivePersona } = useDeliberationStore();
+  const { personas, activePersonasIds, toggleActivePersona, systemPrompts, activeInitialPromptId, activeRoundPromptId, setActivePrompt } = useDeliberationStore();
   const [activeTab, setActiveTab] = useState("models");
 
   // Prevent scrolling on background when sidebar is open
@@ -73,6 +73,16 @@ export function SettingsSidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
             }`}
           >
             Personas
+          </button>
+          <button 
+            onClick={() => setActiveTab("prompts")}
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+              activeTab === "prompts" 
+                ? "bg-white/10 text-white border border-white/5" 
+                : "text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
+            }`}
+          >
+            Prompts
           </button>
         </div>
 
@@ -171,6 +181,88 @@ export function SettingsSidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
                     )
                   })
                 )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "prompts" && (
+            <div className="mb-6 animate-fade-in flex flex-col h-full">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold tracking-widest text-zinc-500 uppercase">
+                  Prompts de Sistema
+                </h3>
+                <Link 
+                  href="/prompts/new" 
+                  onClick={onClose}
+                  className="bg-white text-zinc-950 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-zinc-200 transition-colors shadow-lg"
+                >
+                  + Novo Prompt
+                </Link>
+              </div>
+              <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
+                Gerencie os Prompts do Sistema e escolha um para rodar na Inicialização e outro para rodar nas Rodadas de Debate subsequentes.
+              </p>
+
+              {/* Initial Prompts */}
+              <div className="mb-6">
+                <h4 className="text-xs font-semibold tracking-widest text-emerald-500/80 uppercase mb-3">Modelos Iniciais</h4>
+                <div className="flex flex-col gap-3">
+                  {systemPrompts.filter(p => p.category === 'initial').map(prompt => {
+                    const isActive = activeInitialPromptId === prompt.id;
+                    return (
+                      <div key={prompt.id} className={`bg-black/40 border ${isActive ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-white/10'} rounded-xl p-4 flex flex-col gap-3 hover:border-white/20 transition-colors`}>
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium text-zinc-200 text-sm tracking-wide truncate pr-2">{prompt.name}</h4>
+                          <div className="flex items-center gap-3">
+                            <Link href={`/prompts/${prompt.id}`} onClick={onClose} className="text-zinc-500 hover:text-white transition-colors text-xs font-medium underline underline-offset-2">Editar</Link>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input 
+                                type="radio" 
+                                name="initialPrompt"
+                                className="sr-only peer"
+                                checked={isActive}
+                                onChange={() => setActivePrompt(prompt.id, 'initial')}
+                              />
+                              <div className="w-4 h-4 rounded-full border border-zinc-500 peer-checked:border-[4px] peer-checked:border-emerald-500 transition-all"></div>
+                            </label>
+                          </div>
+                        </div>
+                        <p className="text-xs text-zinc-500 line-clamp-2 leading-relaxed" title={prompt.content}>{prompt.content}</p>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Round Prompts */}
+              <div>
+                <h4 className="text-xs font-semibold tracking-widest text-blue-500/80 uppercase mb-3">Modelos de Debate (Rodadas Correntes)</h4>
+                <div className="flex flex-col gap-3">
+                  {systemPrompts.filter(p => p.category === 'round').map(prompt => {
+                    const isActive = activeRoundPromptId === prompt.id;
+                    return (
+                      <div key={prompt.id} className={`bg-black/40 border ${isActive ? 'border-blue-500/50 bg-blue-500/5' : 'border-white/10'} rounded-xl p-4 flex flex-col gap-3 hover:border-white/20 transition-colors`}>
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium text-zinc-200 text-sm tracking-wide truncate pr-2">{prompt.name}</h4>
+                          <div className="flex items-center gap-3">
+                            <Link href={`/prompts/${prompt.id}`} onClick={onClose} className="text-zinc-500 hover:text-white transition-colors text-xs font-medium underline underline-offset-2">Editar</Link>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input 
+                                type="radio" 
+                                name="roundPrompt"
+                                className="sr-only peer"
+                                checked={isActive}
+                                onChange={() => setActivePrompt(prompt.id, 'round')}
+                              />
+                              <div className="w-4 h-4 rounded-full border border-zinc-500 peer-checked:border-[4px] peer-checked:border-blue-500 transition-all"></div>
+                            </label>
+                          </div>
+                        </div>
+                        <p className="text-xs text-zinc-500 line-clamp-2 leading-relaxed" title={prompt.content}>{prompt.content}</p>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             </div>
           )}

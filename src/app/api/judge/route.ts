@@ -1,6 +1,7 @@
 export const maxDuration = 300; // 5 minutos (Vercel Pro/Local)
 
 import { NextRequest, NextResponse } from 'next/server';
+import { JUDGE_SYSTEM_PROMPT } from '@/lib/prompts';
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Valores obrigatórios ausentes' }, { status: 400 });
     }
 
-    const systemPrompt = "Você é um Juiz Especialista independente. Abaixo está o problema original e os argumentos de múltiplos modelos de IA que debateram a questão. Você NÃO participou do debate. Analise os argumentos, avalie qual lado possui a lógica mais fundamentada, corrija eventuais falácias e forneça a Resposta Final Definitiva. Estruture sua resposta com '## Avaliação do Debate' e '## Veredito Final'.";
+    const systemPrompt = JUDGE_SYSTEM_PROMPT;
 
     const messages = [
       { role: 'system', content: systemPrompt },
