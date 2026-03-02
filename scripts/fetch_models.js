@@ -110,6 +110,105 @@ function generateTags(description) {
   return tags.slice(0, 3);
 }
 
+// ======================================
+// OPENAI FETCH & HEURISTICS
+// ======================================
+
+const OPENAI_CONTEXT_WINDOWS = {
+  "gpt-4o-mini": 128000,
+  "gpt-4o": 128000,
+  "gpt-4-turbo": 128000,
+  "o3-mini": 200000,
+  "o1-mini": 128000,
+  "o1": 200000,
+  "gpt-4-32k": 32768,
+  "gpt-4": 8192,
+  "gpt-3.5-turbo-16k": 16384,
+  "gpt-3.5-turbo": 16384
+};
+
+function getOpenAIContextLength(modelId) {
+  for (const [key, ctx] of Object.entries(OPENAI_CONTEXT_WINDOWS)) {
+    if (modelId.includes(key)) return ctx;
+  }
+  return 8192; // Default safe fallback
+}
+
+function getOpenAIStrengths(modelId) {
+  const tags = [];
+  const idLower = modelId.toLowerCase();
+  if (idLower.includes('o1') || idLower.includes('o3') || idLower.includes('reasoning')) {
+    tags.push('Raciocínio Avançado', 'Matemática');
+  } else if (idLower.includes('gpt-4o')) {
+    tags.push('Multimodal', 'Alta Velocidade');
+  } else if (idLower.includes('turbo') || idLower.includes('mini')) {
+    tags.push('Alta Velocidade');
+  }
+  
+  if (tags.length === 0) tags.push('Uso Geral');
+  return tags.slice(0, 3);
+}
+
+function getOpenAICostTier(modelId) {
+  const idLower = modelId.toLowerCase();
+  if (idLower.includes('mini') || idLower.includes('gpt-3.5')) return 'grátis/barato';
+  return 'caro';
+}
+
+async function fetchOpenAIModels() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    console.warn("⚠️ OPENAI_API_KEY não encontrada. Usando modelos de fallback para OpenAI.");
+    return FIXED_PREMIUM_MODELS.filter(m => m.provider === 'openai');
+  }
+
+  console.log('🔄 Fetching OpenAI models...');
+  try {
+    const res = await fetch('https://api.openai.com/v1/models', {
+      headers: {
+        'Authorization': `Bearer ${apiKey}`
+      }
+    });
+    
+    if (!res.ok) throw new Error(`Status ${res.status}`);
+    const data = await res.json();
+    
+    // Filter conversational models (exclude whisper, tts, dall-e, text-embedding, babbage, etc)
+    const excludePatterns = ['whisper', 'tts', 'dall-e', 'embedding', 'babbage', 'davinci', 'curie', 'ada', 'text-search', 'text-similarity', 'code-search', 'moderation'];
+    
+    const chatModelsRaw = data.data.filter(m => {
+      const id = m.id.toLowerCase();
+      if (excludePatterns.some(p => id.includes(p))) return false;
+      return id.includes('gpt') || id.startsWith('o1') || id.startsWith('o3');
+    });
+
+    const openAIModels = [];
+    for (const m of chatModelsRaw) {
+       openAIModels.push({
+         id: `openai/${m.id}`,
+         name: `OpenAI: ${m.id}`,
+         provider: "openai",
+         free: false,
+         contextLength: getOpenAIContextLength(m.id),
+         description: `Modelo oficial da OpenAI (${m.id}). Atualizado com limites de contexto estipulados off-API.`,
+         strengths: getOpenAIStrengths(m.id),
+         costTier: getOpenAICostTier(m.id),
+         _timestamp: m.created || 0
+       });
+    }
+
+    // Sort by newest first
+    openAIModels.sort((a, b) => b._timestamp - a._timestamp);
+    openAIModels.forEach(m => delete m._timestamp);
+
+    console.log(`✅ Found ${openAIModels.length} OpenAI chat models.`);
+    return openAIModels;
+  } catch(e) {
+    console.error('❌ Failed to fetch OpenAI models:', e.message);
+    return FIXED_PREMIUM_MODELS.filter(m => m.provider === 'openai');
+  }
+}
+
 async function updateRegistry() {
   console.log('🔄 Fetching OpenRouter dynamic models...');
   let openRouterModels = [];
@@ -185,11 +284,10 @@ async function updateRegistry() {
     console.error('❌ Failed to fetch OpenRouter models:', e.message);
   }
 
-  // To prevent the list from being overwhelmingly huge (>30 free models), we can slice/filter them 
-  // or just leave them all for the Accordion UI to handle.
+  const openAIModels = await fetchOpenAIModels();
   
   const finalRegistry = {
-    openai: FIXED_PREMIUM_MODELS.filter(m => m.provider === 'openai'),
+    openai: openAIModels,
     gemini: FIXED_PREMIUM_MODELS.filter(m => m.provider === 'gemini'),
     perplexity: FIXED_PREMIUM_MODELS.filter(m => m.provider === 'perplexity'),
     openrouter: openRouterModels,

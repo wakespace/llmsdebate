@@ -283,7 +283,7 @@
       "provider": "openrouter",
       "free": true,
       "contextLength": 32768,
-      "description": "LFM2.5-1.2B-Instruct é um modelo compacto e de alto desempenho ajustado por instrução, desenvolvido para IA rápida no dispositivo. Ele oferece forte qualidade de bate-papo em um volume de parâmetros de 1,2B, com inferência de borda eficiente e amplo suporte de tempo de execução.",
+      "description": "LFM2.5-1.2B-Instruct é um modelo compacto e de alto desempenho ajustado por instrução, desenvolvido para IA rápida no dispositivo. Ele oferece bate-papo de alta qualidade em um volume de parâmetros de 1,2B, com inferência de borda eficiente e amplo suporte de tempo de execução.",
       "strengths": [
         "Alta Velocidade"
       ],
@@ -473,7 +473,7 @@
       "provider": "openrouter",
       "free": true,
       "contextLength": 131000,
-      "description": "Trinity-Large-Preview é um modelo de linguagem de peso aberto em escala de fronteira da Arcee, construído como uma mistura de especialistas esparsa de 400B de parâmetros com 13B de parâmetros ativos por token usando roteamento especializado de 4 de 256. \n\nEle se destaca em escrita criativa, narrativa, encenação, cenários de bate-papo e assistência de voz em tempo real, melhor do que seu modelo de raciocínio médio normalmente consegue. Mas também estamos apresentando algumas de nossas mais recentes performances de agente. Ele foi treinado para navegar bem em equipamentos de agentes como OpenCode, Cline e Kilo Code, e para lidar com cadeias de ferramentas complexas e prompts longos e cheios de restrições. \n\nA arquitetura suporta nativamente janelas de contexto muito longas de até 512 mil tokens, com a API Preview atualmente servida em contexto de 128 mil usando quantização de 8 bits para implantação prática. Trinity-Large-Preview reflete a filosofia de design de eficiência em primeiro lugar da Arcee, oferecendo um modelo de fronteira orientado para a produção com pesos abertos e licenciamento permissivo adequado para aplicações e experimentação no mundo real.",
+      "description": "Trinity-Large-Preview é um modelo de linguagem de peso aberto em escala de fronteira da Arcee, construído como uma mistura de especialistas esparsa de 400B de parâmetros com 13B de parâmetros ativos por token usando roteamento especializado de 4 de 256. \n\nEle se destaca em escrita criativa, narrativa, encenação, cenários de bate-papo e assistência de voz em tempo real, melhor do que seu modelo de raciocínio médio normalmente consegue. Mas também estamos apresentando algumas de nossas mais recentes performances de agente. Ele foi treinado para navegar bem em equipamentos de agentes como OpenCode, Cline e Kilo Code, e para lidar com cadeias de ferramentas complexas e prompts longos e cheios de restrições. \n\nA arquitetura suporta nativamente janelas de contexto muito longas de até 512 mil tokens, com a API Preview atualmente servida em contexto de 128 mil usando quantização de 8 bits para implantação prática. Trinity-Large-Preview reflects Arcee’s efficiency-first design philosophy, offering a production-oriented frontier model with open weights and permissive licensing suitable for real-world applications and experimentation.",
       "strengths": [
         "Código",
         "Raciocínio Avançado",
