@@ -27,8 +27,8 @@ const FIXED_PREMIUM_MODELS = [
     costTier: "caro"
   },
   {
-    id: "gemini-3-pro-preview-high",
-    name: "Gemini 3 Pro Preview",
+    id: "models/gemini-2.5-pro",
+    name: "Gemini 2.5 Pro",
     provider: "gemini",
     free: false,
     contextLength: 1048576,
@@ -37,8 +37,8 @@ const FIXED_PREMIUM_MODELS = [
     costTier: "caro"
   },
   {
-    id: "gemini-3-flash-preview-high",
-    name: "Gemini 3 Flash Preview",
+    id: "models/gemini-2.5-flash",
+    name: "Gemini 2.5 Flash",
     provider: "gemini",
     free: true,
     contextLength: 1048576,
@@ -284,11 +284,58 @@ async function updateRegistry() {
     console.error('❌ Failed to fetch OpenRouter models:', e.message);
   }
 
+// ======================================
+// GEMINI FETCH & HEURISTICS
+// ======================================
+
+async function fetchGeminiModels() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.warn("⚠️ GEMINI_API_KEY não encontrada. Usando modelos de fallback para Gemini.");
+    return FIXED_PREMIUM_MODELS.filter(m => m.provider === 'gemini');
+  }
+
+  console.log('🔄 Fetching Gemini models...');
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+    if (!res.ok) throw new Error(`Status ${res.status}`);
+    const data = await res.json();
+    
+    // Filter models that support generateContent
+    const validModels = data.models.filter(m => 
+      m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent")
+    );
+
+    const geminiModels = [];
+    for (const m of validModels) {
+      const shortId = m.name.replace('models/', '');
+      
+      geminiModels.push({
+        id: m.name,
+        name: m.displayName || shortId,
+        provider: "gemini",
+        free: false,
+        contextLength: m.inputTokenLimit || 32768,
+        description: m.description,
+        strengths: generateTags(m.description || m.displayName || ""),
+        costTier: shortId.includes('flash') ? "grátis/barato" : "caro",
+      });
+    }
+
+    console.log(`✅ Found ${geminiModels.length} Gemini models.`);
+    return geminiModels.length > 0 ? geminiModels : FIXED_PREMIUM_MODELS.filter(m => m.provider === 'gemini');
+  } catch(e) {
+    console.error('❌ Failed to fetch Gemini models:', e.message);
+    return FIXED_PREMIUM_MODELS.filter(m => m.provider === 'gemini');
+  }
+}
+
   const openAIModels = await fetchOpenAIModels();
+  const geminiModels = await fetchGeminiModels();
   
   const finalRegistry = {
     openai: openAIModels,
-    gemini: FIXED_PREMIUM_MODELS.filter(m => m.provider === 'gemini'),
+    gemini: geminiModels,
     perplexity: FIXED_PREMIUM_MODELS.filter(m => m.provider === 'perplexity'),
     openrouter: openRouterModels,
     local: [

@@ -21,6 +21,7 @@ jobs:
     - name: Run Fetch Models Script
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: node scripts/fetch_models.js
 
     - name: Commit and Push Changes
