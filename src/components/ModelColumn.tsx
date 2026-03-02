@@ -89,10 +89,12 @@ export function ModelColumn({ modelId }: Props) {
              // If this response is an error, render the error card directly
              if (res.error) {
                return (
-                 <div key={`${r}-err-${res.id}`} className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-400 text-sm flex gap-3 shadow-[0_0_15px_rgba(239,68,68,0.05)] items-start">
-                   <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
-                   <p>{res.error}</p>
-                 </div>
+                 <SlotWrapper key={`${r}-err-wrap-${res.id}`}>
+                   <div key={`${r}-err-${res.id}`} className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-400 text-sm flex gap-3 shadow-[0_0_15px_rgba(239,68,68,0.05)] items-start w-full h-full max-h-[450px]">
+                     <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+                     <p>{res.error}</p>
+                   </div>
+                 </SlotWrapper>
                );
              }
              return (
