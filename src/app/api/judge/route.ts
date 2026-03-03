@@ -2,6 +2,7 @@ export const maxDuration = 300; // 5 minutos (Vercel Pro/Local)
 
 import { NextRequest, NextResponse } from 'next/server';
 import { JUDGE_SYSTEM_PROMPT } from '@/lib/prompts';
+import { GoogleGenAI } from '@google/genai';
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,22 +23,43 @@ export async function POST(req: NextRequest) {
     let resultText = "";
     const model = judgeModel;
 
-    // 1. Google Gemini / Gemma (Native API)
-    if (model.includes("gemini") || model.includes("gemma")) {
+    // 1a. Google Gemma (via @google/genai SDK)
+    if (model.includes("gemma")) {
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) throw new Error("GEMINI_API_KEY não configurada");
+
+      const modelId = model.startsWith("models/") ? model.replace("models/", "") : model;
+      const userContent = messages.find(m => m.role === 'user')?.content || "";
+      const inputText = `[INSTRUÇÕES DO SISTEMA/JUÍZ]\n${systemPrompt}\n\n[PROMPT]\n${userContent}`;
+
+      try {
+        const ai = new GoogleGenAI({ apiKey });
+        const response = await ai.models.generateContent({
+          model: modelId,
+          contents: inputText,
+        });
+        resultText = response.text || "";
+      } catch (e: unknown) {
+        const errMsg = e instanceof Error ? e.message : String(e);
+        if (errMsg.includes("429") || errMsg.toLowerCase().includes("quota") || errMsg.toLowerCase().includes("resource_exhausted")) {
+          throw new Error("O limite de requisições gratuitas da API do Gemini/Gemma foi atingido (Quota Excedida). Aguarde alguns minutos.");
+        }
+        throw new Error(`Gemma SDK Error: ${errMsg}`);
+      }
+    }
+
+    // 1b. Google Gemini (REST API)
+    else if (model.includes("gemini")) {
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) throw new Error("GEMINI_API_KEY não configurada");
 
       const modelId = model.startsWith("models/") ? model.replace("models/", "") : model.startsWith("gemini/") ? model.replace("gemini/", "") : model;
-      const isGemma = model.includes("gemma");
-
       const userContent = messages.find(m => m.role === 'user')?.content || "";
       
-      const payload: any = {
-        contents: [{ role: "user", parts: [{ text: isGemma ? `[INSTRUÇÕES DO SISTEMA/JUÍZ]\n${systemPrompt}\n\n[PROMPT]\n${userContent}` : userContent }] }]
+      const payload = {
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ role: "user", parts: [{ text: userContent }] }]
       };
-      if (!isGemma) {
-        payload.systemInstruction = { parts: [{ text: systemPrompt }] };
-      }
 
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`, {
         method: "POST",

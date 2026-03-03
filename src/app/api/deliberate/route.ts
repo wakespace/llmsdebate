@@ -2,6 +2,7 @@ export const maxDuration = 300; // 5 minutos (Vercel Pro/Local)
 
 import { NextRequest, NextResponse } from 'next/server';
 import { ALL_MODELS } from '@/lib/models';
+import { GoogleGenAI } from '@google/genai';
 
 interface PreviousResponse {
   modelId: string;
@@ -53,36 +54,60 @@ export async function POST(req: NextRequest) {
     // Dispatch to the correct provider
     let resultText = "";
 
-    // 1. Google Gemini / Gemma (Native API)
-    if (model.includes("gemini") || model.includes("gemma")) {
+    // 1a. Google Gemma (via @google/genai SDK)
+    if (model.includes("gemma")) {
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) throw new Error("GEMINI_API_KEY não configurada");
 
-      // Extract the model ID for the API URL
       const modelId = model.startsWith("models/") ? model.replace("models/", "") : model;
-      const isGemma = model.includes("gemma");
+
+      // Build a single input string with system prompt + history + user prompt
+      let inputParts: string[] = [];
+      inputParts.push(`[INSTRUÇÕES DO SISTEMA]\n${finalSystemPrompt}`);
       
-      // Gemini needs alternating roles context, better structure
+      if (previousResponses.length > 0) {
+        const hText = previousResponses.map((r: PreviousResponse) => `[${r.modelName}${r.personaName ? ` (${r.personaName})` : ''} - Rodada ${r.round}]:\n${r.text}`).join('\n\n');
+        inputParts.push(`[HISTÓRICO]\n${hText}`);
+      }
+      
+      const userPromptText = round === 1 ? prompt : `Problema original: ${prompt}\n\nAja como um dos juizes avaliadores desse painel, continue a deliberação considerando o histórico fornecido e produza sua nova Análise e Conclusão Final.`;
+      inputParts.push(`[PROMPT]\n${userPromptText}`);
+
+      try {
+        const ai = new GoogleGenAI({ apiKey });
+        const response = await ai.models.generateContent({
+          model: modelId,
+          contents: inputParts.join('\n\n'),
+        });
+        resultText = response.text || "";
+      } catch (e: unknown) {
+        const errMsg = e instanceof Error ? e.message : String(e);
+        if (errMsg.includes("429") || errMsg.toLowerCase().includes("quota") || errMsg.toLowerCase().includes("resource_exhausted")) {
+          throw new Error("O limite de requisições gratuitas da API do Gemini/Gemma foi atingido (Quota Excedida). Aguarde alguns minutos.");
+        }
+        throw new Error(`Gemma SDK Error: ${errMsg}`);
+      }
+    }
+
+    // 1b. Google Gemini (REST API)
+    else if (model.includes("gemini")) {
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) throw new Error("GEMINI_API_KEY não configurada");
+
+      const modelId = model.startsWith("models/") ? model.replace("models/", "") : model;
+      
+      // Gemini needs alternating roles context
       const geminiContents = previousResponses.flatMap((r: PreviousResponse) => [
         { role: "user", parts: [{ text: `[Histórico - ${r.modelName}${r.personaName ? ` (${r.personaName})` : ''} Rodada ${r.round}]:\n${r.text}` }] },
         { role: "model", parts: [{ text: r.text }] }
       ]);
-
-      // For Gemma: embed system prompt in the first user message since systemInstruction is not supported
       const userPromptText = round === 1 ? prompt : `Problema original: ${prompt}\n\nAja como um dos juizes avaliadores desse painel, continue a deliberação considerando o histórico fornecido e produza sua nova Análise e Conclusão Final.`;
-      if (isGemma) {
-        geminiContents.push({ role: "user", parts: [{ text: `[INSTRUÇÕES DO SISTEMA]\n${finalSystemPrompt}\n\n[PROMPT]\n${userPromptText}` }] });
-      } else {
-        geminiContents.push({ role: "user", parts: [{ text: userPromptText }] });
-      }
+      geminiContents.push({ role: "user", parts: [{ text: userPromptText }] });
 
-      const payload: any = {
+      const payload = {
+        systemInstruction: { parts: [{ text: finalSystemPrompt }] },
         contents: geminiContents
       };
-      // Only add systemInstruction for non-Gemma models
-      if (!isGemma) {
-        payload.systemInstruction = { parts: [{ text: finalSystemPrompt }] };
-      }
 
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`, {
         method: "POST",
