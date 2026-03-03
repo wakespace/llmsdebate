@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ArrowLeft, Search, Zap, Brain, Globe, Code, Cpu, Gavel, Filter, Sparkles } from "lucide-react";
+import { ArrowLeft, Search, Zap, Brain, Globe, Code, Cpu, Gavel, Filter, Sparkles, CheckSquare, XSquare } from "lucide-react";
 import Link from "next/link";
 import registryData from "@/data/models_registry.json";
 import { useDeliberationStore } from "@/store/useDeliberationStore";
@@ -77,7 +77,7 @@ export default function ModelsPage() {
   const [freeOnly, setFreeOnly] = useState(false);
   const [providerFilter, setProviderFilter] = useState<string>("all");
 
-  const { activeInstances, setModelInstanceCount, judgeModelsIds, toggleJudgeModel } = useDeliberationStore();
+  const { activeInstances, setModelInstanceCount, clearAllInstances, addAllModelInstances, judgeModelsIds, toggleJudgeModel } = useDeliberationStore();
 
   // Flatten all models from registry
   const allModels: RegistryModel[] = useMemo(() => {
@@ -216,6 +216,25 @@ export default function ModelsPage() {
                 <option key={p} value={p}>{providerMeta[p]?.name || p}</option>
               ))}
             </select>
+
+            {/* Bulk Actions */}
+            <button
+              onClick={() => addAllModelInstances(filteredModels.map(m => m.id))}
+              title="Selecionar todos os modelos filtrados (1x cada)"
+              className="flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-all whitespace-nowrap bg-white/5 border-white/10 text-zinc-400 hover:bg-emerald-500/10 hover:text-emerald-400 hover:border-emerald-500/30"
+            >
+              <CheckSquare className="w-4 h-4" />
+              Todos 1x
+            </button>
+
+            <button
+              onClick={() => clearAllInstances()}
+              title="Limpar todas as instâncias selecionadas"
+              className="flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-all whitespace-nowrap bg-white/5 border-white/10 text-zinc-400 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30"
+            >
+              <XSquare className="w-4 h-4" />
+              Limpar
+            </button>
           </div>
           
           {searchQuery && (
