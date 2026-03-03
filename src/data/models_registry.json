@@ -63,32 +63,6 @@
       "costTier": "caro"
     },
     {
-      "id": "openai/gpt-4o-mini-transcribe-2025-03-20",
-      "name": "gpt-4o-mini-transcribe-2025-03-20",
-      "provider": "openai",
-      "free": false,
-      "contextLength": 128000,
-      "description": "Modelo oficial da OpenAI (gpt-4o-mini-transcribe-2025-03-20). Atualizado com limites de contexto estipulados off-API.",
-      "strengths": [
-        "Multimodal",
-        "Alta Velocidade"
-      ],
-      "costTier": "grátis/barato"
-    },
-    {
-      "id": "openai/gpt-4o-mini-transcribe-2025-12-15",
-      "name": "gpt-4o-mini-transcribe-2025-12-15",
-      "provider": "openai",
-      "free": false,
-      "contextLength": 128000,
-      "description": "Modelo oficial da OpenAI (gpt-4o-mini-transcribe-2025-12-15). Atualizado com limites de contexto estipulados off-API.",
-      "strengths": [
-        "Multimodal",
-        "Alta Velocidade"
-      ],
-      "costTier": "grátis/barato"
-    },
-    {
       "id": "openai/gpt-5.2-chat-latest",
       "name": "gpt-5.2-chat-latest",
       "provider": "openai",
@@ -365,19 +339,6 @@
       "costTier": "caro"
     },
     {
-      "id": "openai/gpt-4o-transcribe-diarize",
-      "name": "gpt-4o-transcribe-diarize",
-      "provider": "openai",
-      "free": false,
-      "contextLength": 128000,
-      "description": "Modelo oficial da OpenAI (gpt-4o-transcribe-diarize). Atualizado com limites de contexto estipulados off-API.",
-      "strengths": [
-        "Multimodal",
-        "Alta Velocidade"
-      ],
-      "costTier": "caro"
-    },
-    {
       "id": "openai/gpt-4.1-nano",
       "name": "gpt-4.1-nano",
       "provider": "openai",
@@ -498,32 +459,6 @@
       "strengths": [
         "Raciocínio Avançado",
         "Matemática"
-      ],
-      "costTier": "caro"
-    },
-    {
-      "id": "openai/gpt-4o-mini-transcribe",
-      "name": "gpt-4o-mini-transcribe",
-      "provider": "openai",
-      "free": false,
-      "contextLength": 128000,
-      "description": "Modelo oficial da OpenAI (gpt-4o-mini-transcribe). Atualizado com limites de contexto estipulados off-API.",
-      "strengths": [
-        "Multimodal",
-        "Alta Velocidade"
-      ],
-      "costTier": "grátis/barato"
-    },
-    {
-      "id": "openai/gpt-4o-transcribe",
-      "name": "gpt-4o-transcribe",
-      "provider": "openai",
-      "free": false,
-      "contextLength": 128000,
-      "description": "Modelo oficial da OpenAI (gpt-4o-transcribe). Atualizado com limites de contexto estipulados off-API.",
-      "strengths": [
-        "Multimodal",
-        "Alta Velocidade"
       ],
       "costTier": "caro"
     },
