@@ -119,6 +119,7 @@ interface State {
   
   // Model Instances (replaces activeModelsIds for more granular control)
   activeInstances: ModelInstance[];
+  hasMigratedInstances: boolean;
   
   // Actions
   setSettingsOpen: (open: boolean) => void;
@@ -186,6 +187,7 @@ export const useDeliberationStore = create<State>()(
         'openrouter/upstage/solar-pro-3:free'
       ],
       activeInstances: [], // New state for instances
+      hasMigratedInstances: false,
       status: 'idle',
       columnStatus: {},
       summarizationEnabled: false,
@@ -300,7 +302,8 @@ export const useDeliberationStore = create<State>()(
 
       clearAllInstances: () => set({
         activeInstances: [],
-        selectedModels: []
+        selectedModels: [],
+        activeModelsIds: []
       }),
 
       setInstancePersona: (instanceId, personaId) => set((state) => {
@@ -490,8 +493,6 @@ export const useDeliberationStore = create<State>()(
         activeSystemPrompt: DEFAULT_SYSTEM_PROMPT,
         round: 1,
         responses: [],
-        selectedModels: [],
-        activeInstances: [],
         status: 'idle',
         columnStatus: {},
         synthesisResult: null,
@@ -591,6 +592,7 @@ export const useDeliberationStore = create<State>()(
         selectedModels: state.selectedModels,
         activeModelsIds: state.activeModelsIds,
         activeInstances: state.activeInstances,
+        hasMigratedInstances: state.hasMigratedInstances,
         judgeModelsIds: state.judgeModelsIds,
         hasSeededJudgeModels: state.hasSeededJudgeModels,
         summarizationEnabled: state.summarizationEnabled,
@@ -664,8 +666,8 @@ export const useDeliberationStore = create<State>()(
              });
           }
 
-          if (state.activeInstances === undefined || state.activeInstances.length === 0) {
-            // Migrate activeModelsIds to activeInstances
+          if (!state.hasMigratedInstances && (state.activeInstances === undefined || state.activeInstances.length === 0)) {
+            // Migrate activeModelsIds to activeInstances (one-time only)
             if (state.activeModelsIds && state.activeModelsIds.length > 0) {
               const migratedInstances = state.activeModelsIds.map(modelId => ({
                 id: `${modelId}_migrated_${Math.random().toString(36).substr(2, 9)}`,
@@ -684,10 +686,11 @@ export const useDeliberationStore = create<State>()(
 
               useDeliberationStore.setState({ 
                 activeInstances: migratedInstances,
-                selectedModels: newSelected
+                selectedModels: newSelected,
+                hasMigratedInstances: true
               });
             } else {
-              useDeliberationStore.setState({ activeInstances: [] });
+              useDeliberationStore.setState({ activeInstances: [], hasMigratedInstances: true });
             }
           }
         }, 0);
