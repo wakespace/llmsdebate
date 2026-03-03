@@ -195,7 +195,7 @@ async function fetchOpenAIModels() {
     const data = await res.json();
     
     // Filter conversational models (exclude whisper, tts, dall-e, text-embedding, babbage, etc)
-    const excludePatterns = ['whisper', 'tts', 'dall-e', 'embedding', 'babbage', 'davinci', 'curie', 'ada', 'text-search', 'text-similarity', 'code-search', 'moderation', 'audio', 'image', 'realtime', 'transcribe'];
+    const excludePatterns = ['whisper', 'tts', 'dall-e', 'embedding', 'babbage', 'davinci', 'curie', 'ada', 'text-search', 'text-similarity', 'code-search', 'moderation', 'audio', 'image', 'realtime', 'transcribe', 'search-preview'];
     
     const chatModelsRaw = data.data.filter(m => {
       const id = m.id.toLowerCase();
