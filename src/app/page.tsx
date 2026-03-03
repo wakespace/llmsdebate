@@ -177,12 +177,31 @@ export default function Home() {
     }
 
 
+    // Calculate staggering delays for identical models to avoid rate limit issues
+    const modelCounts: Record<string, number> = {};
+
     // 3. Dispatch fetches in parallel
-    const promises = activeModels.map(async (modelId) => {
-      setColumnStatus(modelId, 'loading');
+    const promises = activeModels.map(async (instanceId) => {
+      const state = useDeliberationStore.getState();
+      const instance = state.activeInstances.find(inst => inst.id === instanceId);
+      if (!instance) {
+         setColumnStatus(instanceId, 'error');
+         return;
+      }
+      const actualModelId = instance.modelId;
+      
+      const currentCount = modelCounts[actualModelId] || 0;
+      modelCounts[actualModelId] = currentCount + 1;
+      const delayMs = currentCount * 2500; // 2.5s delay per identical model concurrently
+      
+      if (delayMs > 0) {
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+
+      setColumnStatus(instanceId, 'loading');
       const startTime = Date.now();
       
-      const isLocal = modelId.startsWith('local/');
+      const isLocal = actualModelId.startsWith('local/');
       const endpoint = isLocal ? '/api/local' : '/api/deliberate';
       
       // Map name
@@ -193,17 +212,17 @@ export default function Home() {
         ...registryData.openrouter,
         ...registryData.local
       ];
-      const knownModel = registryArray.find(m => m.id === modelId);
-      let modelName = knownModel ? knownModel.name : modelId;
-      if (isLocal) modelName = `${modelId.replace('local/', '')} (Local)`;
+      const knownModel = registryArray.find(m => m.id === actualModelId);
+      let modelName = knownModel ? knownModel.name : actualModelId;
+      if (isLocal) modelName = `${actualModelId.replace('local/', '')} (Local)`;
 
       let resultText = "";
       let hasError = false;
       let errorMsg = undefined;
 
       // Persona Context Injection
-      const { modelPersonas, personas } = useDeliberationStore.getState();
-      const assignedPersonaId = modelPersonas[modelId];
+      const { personas } = useDeliberationStore.getState();
+      const assignedPersonaId = instance.personaId;
       const assignedPersona = assignedPersonaId ? personas.find(p => p.id === assignedPersonaId) : null;
       
       let customizedSystemPrompt = currentSystemPrompt;
@@ -231,14 +250,14 @@ export default function Home() {
            }
            
            bodyPayload = {
-              model: modelId.replace('local/', ''),
+              model: actualModelId.replace('local/', ''),
               messages
            };
         } else {
            bodyPayload = {
              prompt,
              round,
-             model: modelId,
+             model: actualModelId,
              previousResponses: historyPayload,
              systemPrompt: customizedSystemPrompt
            };
@@ -266,11 +285,11 @@ export default function Home() {
       const durationMs = Date.now() - startTime;
       
       if (hasError) {
-         setColumnStatus(modelId, 'error');
+         setColumnStatus(instanceId, 'error');
          addResponse({
-           id: `${round}-${modelId}-${Date.now()}`,
+           id: `${round}-${instanceId}-${Date.now()}`,
            round,
-           modelId,
+           modelId: instanceId, // Storing instanceId as modelId so UI plots it in its own column
            modelName,
            personaName: assignedPersona?.name,
            text: "",
@@ -281,11 +300,11 @@ export default function Home() {
          });
       } else {
          const { analysis, conclusion } = parseResponse(resultText);
-         setColumnStatus(modelId, 'success');
+         setColumnStatus(instanceId, 'success');
          addResponse({
-           id: `${round}-${modelId}-${Date.now()}`,
+           id: `${round}-${instanceId}-${Date.now()}`,
            round,
-           modelId,
+           modelId: instanceId,
            modelName,
            personaName: assignedPersona?.name,
            text: resultText,
@@ -321,12 +340,12 @@ export default function Home() {
           )}
           
           <div className="flex gap-6 overflow-x-auto custom-scrollbar pb-2 snap-x relative w-full items-start">
-             {/* Show columns for all models that participated OR are currently selected */}
+             {/* Show columns for all instances that participated OR are currently selected */}
              {Array.from(new Set([
                ...selectedModels,
-               ...responses.filter(r => r.modelId !== 'user').map(r => r.modelId)
-             ])).map(modelId => (
-               <ModelColumn key={modelId} modelId={modelId} />
+               ...responses.filter(r => r.modelId !== 'user').map(r => r.modelId) // r.modelId contains instanceId
+             ])).map(instanceId => (
+               <ModelColumn key={instanceId} instanceId={instanceId} />
              ))}
           </div>
         </div>

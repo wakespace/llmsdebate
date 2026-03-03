@@ -15,10 +15,10 @@ export function InputArea() {
     status, startDeliberation, startNextRound, reset,
     systemPrompts, activeInitialPromptId, activeRoundPromptId, updateSystemPrompt, responses,
     roundPrompt, setRoundPrompt,
-    activeModelsIds, setSettingsOpen
+    activeInstances, toggleInstanceSelection, setSettingsOpen
   } = useDeliberationStore();
 
-  const [localModels, setLocalModels] = useState<{id: string, name: string}[]>([]);
+  const [localModels, setLocalModels] = useState<any[]>([]);
   const [providerStatus, setProviderStatus] = useState<Record<string, { available: boolean; reason?: string }>>({});
   const [openRouterFreeModels, setOpenRouterFreeModels] = useState<string[] | null>(null);
   const [savedSystemPrompt, setSavedSystemPrompt] = useState(false);
@@ -89,7 +89,7 @@ export function InputArea() {
     return providerStatus[provider]?.reason;
   };
 
-  const allModels = useMemo(() => {
+  const allInstances = useMemo(() => {
     // Flatten registryData into a single array
     const registryArray = [
       ...registryData.openai,
@@ -99,42 +99,41 @@ export function InputArea() {
       ...registryData.local
     ];
 
-    // Filter only those the user kept active via the Settings Sidebar
-    const activeModels = registryArray.filter(m => activeModelsIds.includes(m.id));
+    const combinedModels = [...registryArray, ...localModels];
 
-    const updatedModels = activeModels.map(m => {
-      // If it's an OpenRouter model we initially deemed 'free', but it's absent from real-time free list:
-      if (m.provider === 'openrouter' && m.free === true && openRouterFreeModels !== null) {
-        const rawId = m.id.replace('openrouter/', '');
-        if (!openRouterFreeModels.includes(rawId)) {
-          return {
-            ...m,
-            free: false,
-            costTier: 'caro' as const, // Override to paid
-            description: "⚠️ [A OpenRouter encerrou o período gratuito] " + m.description
-          };
-        }
-      }
-      return m;
-    });
+    // Map activeInstances to enriched object
+    const mapped = activeInstances.map(inst => {
+       const baseModel = combinedModels.find(m => m.id === inst.modelId);
+       if (!baseModel) return null;
+       
+       const model = { ...baseModel, instanceId: inst.id, personaId: inst.personaId };
+       
+       // Handle OpenRouter free models change
+       if (model.provider === 'openrouter' && model.free === true && openRouterFreeModels !== null) {
+         const rawId = model.id.replace('openrouter/', '');
+         if (!openRouterFreeModels.includes(rawId)) {
+           return {
+             ...model,
+             free: false,
+             costTier: 'caro' as const,
+             description: "⚠️ [A OpenRouter encerrou o período gratuito] " + model.description
+           };
+         }
+       }
+       return model;
+    }).filter(Boolean) as (typeof registryArray[0] & { instanceId: string, personaId?: string })[];
 
-    return [
-      ...updatedModels, 
-      // Ensure discovered local models are also shown if they were activated
-      ...localModels
-          .filter(lm => activeModelsIds.includes(lm.id) && !updatedModels.some(um => um.id === lm.id))
-          .map(m => ({ ...m, provider: 'local', free: true, description: '', strengths: [] as string[], costTier: 'grátis' as const, bestFor: '' }))
-    ];
-  }, [activeModelsIds, localModels, openRouterFreeModels]);
+    return mapped;
+  }, [activeInstances, localModels, openRouterFreeModels]);
 
   useEffect(() => {
     // Clean up any stale model IDs that were saved in the user's localStorage
     // but no longer exist in the application's predefined model lists.
-    const invalidSelectors = selectedModels.filter(id => !allModels.some(m => m.id === id));
+    const invalidSelectors = selectedModels.filter(id => !allInstances.some(inst => inst.instanceId === id));
     if (invalidSelectors.length > 0) {
-      invalidSelectors.forEach(invalidId => toggleModel(invalidId));
+      invalidSelectors.forEach(invalidId => toggleInstanceSelection(invalidId));
     }
-  }, [selectedModels, allModels, toggleModel]);
+  }, [selectedModels, allInstances, toggleInstanceSelection]);
 
   const canStart = prompt.trim().length > 0 && selectedModels.length > 0;
 
@@ -283,31 +282,38 @@ export function InputArea() {
           </div>
           
           <div className="flex flex-col gap-1 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
-            {allModels.map((model) => {
+            {allInstances.map((model, idx) => {
               const disabled = isModelDisabled(model.id);
               const reason = getDisabledReason(model.id);
               const isPaid = !('free' in model) || !model.free;
+              const personaName = useDeliberationStore.getState().personas.find(p => p.id === model.personaId)?.name || 'Sem Persona';
+              
               return (
                 <label 
-                  key={model.id} 
-                  className={`flex items-center gap-2 p-2 rounded-lg transition-colors border border-transparent ${
+                  key={model.instanceId} 
+                  className={`flex flex-col gap-1 p-2.5 rounded-lg transition-colors border ${
                     disabled 
-                      ? 'opacity-40 cursor-not-allowed' 
-                      : 'hover:bg-white/5 cursor-pointer hover:border-white/5'
+                      ? 'opacity-40 cursor-not-allowed border-transparent' 
+                      : 'hover:bg-white/5 cursor-pointer border-white/5 bg-black/20 hover:border-white/10'
                   }`}
                   title={disabled ? `⚠ ${reason}` : model.name}
                 >
-                  <input 
-                    type="checkbox" 
-                    className="w-4 h-4 rounded border-white/20 text-white focus:ring-white/30 focus:ring-offset-zinc-950 bg-black/40 cursor-pointer accent-white mix-blend-screen shrink-0" 
-                    checked={!disabled && selectedModels.includes(model.id)}
-                    onChange={() => !disabled && toggleModel(model.id)}
-                    disabled={isDeliberating || disabled}
-                  />
-                  <span className={`text-sm font-medium truncate ${disabled ? 'text-zinc-600' : 'text-zinc-300'}`}>{model.name}</span>
-                  {isPaid && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/20 shrink-0 ml-auto" title="Requer créditos">$</span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <input 
+                      type="checkbox" 
+                      className="w-4 h-4 rounded border-white/20 text-white focus:ring-white/30 focus:ring-offset-zinc-950 bg-black/40 cursor-pointer accent-white mix-blend-screen shrink-0" 
+                      checked={!disabled && selectedModels.includes(model.instanceId)}
+                      onChange={() => !disabled && toggleInstanceSelection(model.instanceId)}
+                      disabled={isDeliberating || disabled}
+                    />
+                    <span className={`text-sm font-medium truncate ${disabled ? 'text-zinc-600' : 'text-zinc-300'}`}>{model.name}</span>
+                    {isPaid && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/20 shrink-0 ml-auto" title="Requer créditos">$</span>
+                    )}
+                  </div>
+                  <div className="pl-6 text-[10px] text-zinc-500 font-medium italic truncate">
+                    {personaName}
+                  </div>
                 </label>
               );
             })}

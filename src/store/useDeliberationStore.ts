@@ -12,6 +12,12 @@ export interface SystemPrompt {
   category: 'initial' | 'round';
 }
 
+export interface ModelInstance {
+  id: string;
+  modelId: string;
+  personaId?: string;
+}
+
 export interface DeliberationResponse {
   id: string; // unique per response
   round: number;
@@ -109,14 +115,24 @@ interface State {
   // Personas State
   personas: Persona[];
   activePersonasIds: string[];
-  modelPersonas: Record<string, string>; // modelId -> personaId
+  modelPersonas: Record<string, string>; // Legacy modelId -> personaId (deprecated)
+  
+  // Model Instances (replaces activeModelsIds for more granular control)
+  activeInstances: ModelInstance[];
   
   // Actions
   setSettingsOpen: (open: boolean) => void;
   setPrompt: (prompt: string) => void;
   setRoundPrompt: (prompt: string) => void;
-  toggleModel: (modelId: string) => void;
-  toggleActiveModel: (modelId: string) => void;
+  
+  toggleModel: (modelId: string) => void; // Legacy selection (deprecated)
+  toggleActiveModel: (modelId: string) => void; // Legacy toggle (deprecated)
+  
+  addModelInstance: (modelId: string) => void;
+  removeModelInstance: (instanceId: string) => void;
+  setInstancePersona: (instanceId: string, personaId?: string) => void;
+  toggleInstanceSelection: (instanceId: string) => void;
+  
   toggleJudgeModel: (modelId: string) => void;
   setSummarizationEnabled: (enabled: boolean) => void;
   startDeliberation: (draftSystemPrompt?: string) => void;
@@ -160,12 +176,13 @@ export const useDeliberationStore = create<State>()(
       roundPrompt: '',
       round: 1,
       responses: [],
-      selectedModels: ['gemini-3-flash-preview-high'], // default selected
+      selectedModels: ['gemini-3-flash-preview-high'], // Legacy selection
       activeModelsIds: [
         'gemini-3-flash-preview-high',
         'openrouter/qwen/qwen3-vl-30b-a3b-thinking',
         'openrouter/upstage/solar-pro-3:free'
       ],
+      activeInstances: [], // New state for instances
       status: 'idle',
       columnStatus: {},
       summarizationEnabled: false,
@@ -212,9 +229,38 @@ export const useDeliberationStore = create<State>()(
           ? state.activeModelsIds.filter(id => id !== modelId)
           : [...state.activeModelsIds, modelId];
         
-        // If we disabled a model, make sure it's removed from the current selection too
         const newSelected = state.selectedModels.filter(id => id !== modelId || active.includes(modelId));
         return { activeModelsIds: active, selectedModels: newSelected };
+      }),
+
+      addModelInstance: (modelId) => set((state) => {
+        const newInstanceId = `${modelId}_${Math.random().toString(36).substr(2, 9)}`;
+        return { 
+          activeInstances: [...state.activeInstances, { id: newInstanceId, modelId }],
+          selectedModels: [...state.selectedModels, newInstanceId] // Auto-select when added
+        };
+      }),
+
+      removeModelInstance: (instanceId) => set((state) => {
+        return {
+          activeInstances: state.activeInstances.filter(inst => inst.id !== instanceId),
+          selectedModels: state.selectedModels.filter(id => id !== instanceId)
+        };
+      }),
+
+      setInstancePersona: (instanceId, personaId) => set((state) => {
+        return {
+          activeInstances: state.activeInstances.map(inst => 
+            inst.id === instanceId ? { ...inst, personaId } : inst
+          )
+        };
+      }),
+
+      toggleInstanceSelection: (instanceId) => set((state) => {
+        const selected = state.selectedModels.includes(instanceId)
+          ? state.selectedModels.filter(id => id !== instanceId)
+          : [...state.selectedModels, instanceId];
+        return { selectedModels: selected };
       }),
 
       toggleJudgeModel: (modelId) => set((state) => {
@@ -488,6 +534,7 @@ export const useDeliberationStore = create<State>()(
         responses: state.responses,
         selectedModels: state.selectedModels,
         activeModelsIds: state.activeModelsIds,
+        activeInstances: state.activeInstances,
         judgeModelsIds: state.judgeModelsIds,
         hasSeededJudgeModels: state.hasSeededJudgeModels,
         summarizationEnabled: state.summarizationEnabled,
@@ -559,6 +606,33 @@ export const useDeliberationStore = create<State>()(
                 activeInitialPromptId: initialId,
                 activeRoundPromptId: roundId
              });
+          }
+
+          if (state.activeInstances === undefined || state.activeInstances.length === 0) {
+            // Migrate activeModelsIds to activeInstances
+            if (state.activeModelsIds && state.activeModelsIds.length > 0) {
+              const migratedInstances = state.activeModelsIds.map(modelId => ({
+                id: `${modelId}_migrated_${Math.random().toString(36).substr(2, 9)}`,
+                modelId,
+                personaId: state.modelPersonas?.[modelId] || undefined
+              }));
+              
+              // Also map selectedModels if they match the old modelId
+              let newSelected = [...(state.selectedModels || [])];
+              migratedInstances.forEach(inst => {
+                if (newSelected.includes(inst.modelId)) {
+                  newSelected = newSelected.filter(id => id !== inst.modelId);
+                  newSelected.push(inst.id);
+                }
+              });
+
+              useDeliberationStore.setState({ 
+                activeInstances: migratedInstances,
+                selectedModels: newSelected
+              });
+            } else {
+              useDeliberationStore.setState({ activeInstances: [] });
+            }
           }
         }, 0);
       }

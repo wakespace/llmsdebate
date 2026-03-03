@@ -5,28 +5,30 @@ import { CheckCircle2, Loader2, AlertTriangle } from "lucide-react";
 import { ResponseCard } from "./ResponseCard";
 
 interface Props {
-  modelId: string;
+  instanceId: string;
 }
 
-export function ModelColumn({ modelId }: Props) {
+export function ModelColumn({ instanceId }: Props) {
   const { 
     responses, 
     columnStatus, 
     round, 
     status: globalStatus, 
-    activePersonasIds, 
-    modelPersonas, 
-    setModelPersona, 
+    activeInstances,
+    setInstancePersona, 
     personas 
   } = useDeliberationStore();
   
-  const modelResponses = responses.filter(r => r.modelId === modelId).sort((a,b) => a.round - b.round);
-  const status = columnStatus[modelId] || 'idle';
+  const modelResponses = responses.filter(r => r.modelId === instanceId).sort((a,b) => a.round - b.round);
+  const status = columnStatus[instanceId] || 'idle';
   
+  const instance = activeInstances.find(i => i.id === instanceId);
+  const actualModelId = instance?.modelId || instanceId;
+
   // Try to get a friendly name from the first response, or fallback to id
   const friendlyName = modelResponses.length > 0 
     ? modelResponses[0].modelName 
-    : modelId.split('/').pop() || modelId;
+    : actualModelId.split('/').pop() || actualModelId;
 
   return (
     <div className="flex flex-col gap-4 min-w-[340px] max-w-[400px] flex-1 shrink-0 animate-fade-in relative z-10 transition-all duration-500 ease-out">
@@ -39,22 +41,19 @@ export function ModelColumn({ modelId }: Props) {
           </h2>
           
           {/* Persona Selector */}
-          {activePersonasIds.length > 0 && (
+          {instance && (
             <div className="mt-2">
               <select 
                 title="Selecione uma especialidade/persona"
                 disabled={status === 'loading' || globalStatus === 'deliberating'}
-                value={modelPersonas[modelId] || ""}
-                onChange={(e) => setModelPersona(modelId, e.target.value)}
+                value={instance.personaId || ""}
+                onChange={(e) => setInstancePersona(instanceId, e.target.value)}
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-zinc-300 focus:outline-none focus:ring-1 focus:ring-white/30 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
               >
                 <option value="">Sem Persona (Padrão)</option>
-                {personas
-                  .filter(p => activePersonasIds.includes(p.id))
-                  .map(p => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
-                  ))
-                }
+                {personas.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
               </select>
             </div>
           )}
