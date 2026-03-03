@@ -59,7 +59,7 @@ export function SynthesisPreflightModal() {
   const handleConfirm = async () => {
     // Engatilha requisição paralela via Zustand, Modal fechará imediatamente.
     cancelSynthesisModal();
-    await requestJudgeSynthesis(pendingSynthesisModelId, customJudgePrompt);
+    await requestJudgeSynthesis(pendingSynthesisModelId);
   };
 
   return (

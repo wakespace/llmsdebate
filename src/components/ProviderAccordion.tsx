@@ -10,7 +10,7 @@ interface ModelData {
   provider: string;
   free: boolean;
   costTier: string;
-  description: string;
+  description?: string;
   strengths: string[];
 }
 

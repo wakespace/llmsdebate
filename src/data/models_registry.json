@@ -1536,17 +1536,44 @@
       "costTier": "caro"
     },
     {
+      "id": "perplexity/sonar-reasoning-pro",
+      "name": "Sonar Reasoning Pro",
+      "provider": "perplexity",
+      "free": false,
+      "contextLength": 128000,
+      "description": "Respostas fundamentadas com navegação ativa extensa e imenso input.",
+      "strengths": [
+        "Respostas fundamentadas online",
+        "Raciocínio Avançado passo a passo"
+      ],
+      "costTier": "caro"
+    },
+    {
       "id": "perplexity/sonar-pro",
       "name": "Sonar Pro",
       "provider": "perplexity",
       "free": false,
-      "contextLength": 128000,
+      "contextLength": 200000,
       "description": "Edição voltada a respostas rápidas fundamentadas por links exatos da web.",
       "strengths": [
         "Busca veloz com precisão de links",
         "Alta ancoragem"
       ],
       "costTier": "moderado"
+    },
+    {
+      "id": "perplexity/sonar",
+      "name": "Sonar",
+      "provider": "perplexity",
+      "free": false,
+      "contextLength": 128000,
+      "description": "Modelo leve focado em velocidade extrema e ótimo custo-benefício para buscas diretas.",
+      "strengths": [
+        "Busca Ultra Rápida",
+        "Baixo Custo",
+        "Respostas concisas"
+      ],
+      "costTier": "barato"
     }
   ],
   "openrouter": [
@@ -1700,18 +1727,6 @@
       "costTier": "grátis"
     },
     {
-      "id": "openrouter/upstage/solar-pro-3:free",
-      "name": "Upstage: Solar Pro 3",
-      "provider": "openrouter",
-      "free": true,
-      "contextLength": 128000,
-      "description": "Solar Pro 3 é o poderoso modelo de linguagem Mixture-of-Experts (MoE) do Upstage. Com 102B de parâmetros totais e 12B de parâmetros ativos por passagem direta, ele oferece desempenho excepcional enquanto mantém a eficiência computacional. Otimizado para coreano com suporte para inglês e japonês.",
-      "strengths": [
-        "MoE"
-      ],
-      "costTier": "grátis"
-    },
-    {
       "id": "openrouter/qwen/qwen3-4b:free",
       "name": "Qwen: Qwen3 4B",
       "provider": "openrouter",
@@ -1757,7 +1772,7 @@
       "provider": "openrouter",
       "free": true,
       "contextLength": 131072,
-      "description": "Gemma 3 introduz multimodalidade, suportando entrada de linguagem visual e saída de texto. Ele lida com janelas de contexto de até 128 mil tokens, entende mais de 140 idiomas e oferece recursos aprimorados de matemática, raciocínio e bate-papo, incluindo saídas estruturadas e chamadas de funções. Gemma 3 27B é o mais recente modelo de código aberto do Google, sucessor do [Gemma 2](google/gemma-2-27b-it)",
+      "description": "Gemma 3 introduz multimodalidade, suportando entrada de linguagem visual e saída de texto. Ele lida com janelas de contexto de até 128 mil tokens, entende mais de 140 idiomas e oferece recursos aprimorados de matemática, raciocínio e bate-papo, incluindo saídas estruturadas e chamadas de funções. Gemma 3 27B é o modelo de código aberto mais recente do Google, sucessor do [Gemma 2](google/gemma-2-27b-it)",
       "strengths": [
         "Código",
         "Matemática",

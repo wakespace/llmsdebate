@@ -57,14 +57,34 @@ const FIXED_PREMIUM_MODELS = [
     costTier: "caro"
   },
   {
+    id: "perplexity/sonar-reasoning-pro",
+    name: "Sonar Reasoning Pro",
+    provider: "perplexity",
+    free: false,
+    contextLength: 128000,
+    description: "Respostas fundamentadas com navegação ativa extensa e imenso input.",
+    strengths: ["Respostas fundamentadas online", "Raciocínio Avançado passo a passo"],
+    costTier: "caro"
+  },
+  {
     id: "perplexity/sonar-pro",
     name: "Sonar Pro",
     provider: "perplexity",
     free: false,
-    contextLength: 128000,
+    contextLength: 200000,
     description: "Edição voltada a respostas rápidas fundamentadas por links exatos da web.",
     strengths: ["Busca veloz com precisão de links", "Alta ancoragem"],
     costTier: "moderado"
+  },
+  {
+    id: "perplexity/sonar",
+    name: "Sonar",
+    provider: "perplexity",
+    free: false,
+    contextLength: 128000,
+    description: "Modelo leve focado em velocidade extrema e ótimo custo-benefício para buscas diretas.",
+    strengths: ["Busca Ultra Rápida", "Baixo Custo", "Respostas concisas"],
+    costTier: "barato"
   }
 ];
 
