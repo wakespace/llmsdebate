@@ -880,18 +880,6 @@
       "costTier": "grátis/barato"
     },
     {
-      "id": "models/gemini-2.0-flash-exp-image-generation",
-      "name": "Gemini 2.0 Flash (Image Generation) Experimental",
-      "provider": "gemini",
-      "free": false,
-      "contextLength": 1048576,
-      "description": "Gemini 2.0 Flash (Image Generation) Experimental",
-      "strengths": [
-        "Alta Velocidade"
-      ],
-      "costTier": "grátis/barato"
-    },
-    {
       "id": "models/gemini-2.0-flash-lite-001",
       "name": "Gemini 2.0 Flash-Lite 001",
       "provider": "gemini",
@@ -914,30 +902,6 @@
         "Alta Velocidade"
       ],
       "costTier": "grátis/barato"
-    },
-    {
-      "id": "models/gemini-2.5-flash-preview-tts",
-      "name": "Gemini 2.5 Flash Preview TTS",
-      "provider": "gemini",
-      "free": false,
-      "contextLength": 8192,
-      "description": "Gemini 2.5 Flash Preview TTS",
-      "strengths": [
-        "Alta Velocidade"
-      ],
-      "costTier": "grátis/barato"
-    },
-    {
-      "id": "models/gemini-2.5-pro-preview-tts",
-      "name": "Gemini 2.5 Pro Preview TTS",
-      "provider": "gemini",
-      "free": false,
-      "contextLength": 8192,
-      "description": "Gemini 2.5 Pro Preview TTS",
-      "strengths": [
-        "Uso Geral"
-      ],
-      "costTier": "caro"
     },
     {
       "id": "models/gemma-3-1b-it",
@@ -1054,18 +1018,6 @@
       "costTier": "grátis/barato"
     },
     {
-      "id": "models/gemini-2.5-flash-image",
-      "name": "Nano Banana",
-      "provider": "gemini",
-      "free": false,
-      "contextLength": 32768,
-      "description": "Gemini 2.5 Flash Preview Image",
-      "strengths": [
-        "Alta Velocidade"
-      ],
-      "costTier": "grátis/barato"
-    },
-    {
       "id": "models/gemini-2.5-flash-lite-preview-09-2025",
       "name": "Gemini 2.5 Flash-Lite Preview Sep 2025",
       "provider": "gemini",
@@ -1136,66 +1088,6 @@
         "Alta Velocidade"
       ],
       "costTier": "grátis/barato"
-    },
-    {
-      "id": "models/gemini-3-pro-image-preview",
-      "name": "Nano Banana Pro",
-      "provider": "gemini",
-      "free": false,
-      "contextLength": 131072,
-      "description": "Gemini 3 Pro Image Preview",
-      "strengths": [
-        "Uso Geral"
-      ],
-      "costTier": "caro"
-    },
-    {
-      "id": "models/gemini-3.1-flash-image-preview",
-      "name": "Nano Banana 2",
-      "provider": "gemini",
-      "free": false,
-      "contextLength": 65536,
-      "description": "Gemini 3.1 Flash Image Preview.",
-      "strengths": [
-        "Alta Velocidade"
-      ],
-      "costTier": "grátis/barato"
-    },
-    {
-      "id": "models/gemini-robotics-er-1.5-preview",
-      "name": "Gemini Robotics-ER 1.5 Preview",
-      "provider": "gemini",
-      "free": false,
-      "contextLength": 1048576,
-      "description": "Gemini Robotics-ER 1.5 Preview",
-      "strengths": [
-        "Uso Geral"
-      ],
-      "costTier": "caro"
-    },
-    {
-      "id": "models/gemini-2.5-computer-use-preview-10-2025",
-      "name": "Gemini 2.5 Computer Use Preview 10-2025",
-      "provider": "gemini",
-      "free": false,
-      "contextLength": 131072,
-      "description": "Gemini 2.5 Computer Use Preview 10-2025",
-      "strengths": [
-        "Uso Geral"
-      ],
-      "costTier": "caro"
-    },
-    {
-      "id": "models/deep-research-pro-preview-12-2025",
-      "name": "Deep Research Pro Preview (Dec-12-2025)",
-      "provider": "gemini",
-      "free": false,
-      "contextLength": 131072,
-      "description": "Preview release (December 12th, 2025) of Deep Research Pro",
-      "strengths": [
-        "Pesquisa Web"
-      ],
-      "costTier": "caro"
     }
   ],
   "perplexity": [

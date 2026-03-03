@@ -329,14 +329,15 @@ async function fetchGeminiModels() {
     if (!res.ok) throw new Error(`Status ${res.status}`);
     const data = await res.json();
     
-    // Filter models that support generateContent and are not specifically vision/audio/banana only
-    const validModels = data.models.filter(m => 
-      m.supportedGenerationMethods && 
-      m.supportedGenerationMethods.includes("generateContent") &&
-      !m.name.toLowerCase().includes("vision") && 
-      !m.name.toLowerCase().includes("audio") &&
-      !m.name.toLowerCase().includes("banana")
-    );
+    // Filter models that support generateContent and exclude non-chat models
+    const geminiExcludeTerms = ['vision', 'audio', 'banana', 'image', 'tts', 'robotics', 'computer-use', 'deep-research'];
+    const validModels = data.models.filter(m => {
+      if (!m.supportedGenerationMethods || !m.supportedGenerationMethods.includes("generateContent")) return false;
+      const nameLC = (m.name || '').toLowerCase();
+      const displayLC = (m.displayName || '').toLowerCase();
+      if (geminiExcludeTerms.some(term => nameLC.includes(term) || displayLC.includes(term))) return false;
+      return true;
+    });
 
     const geminiModels = [];
     for (const m of validModels) {
