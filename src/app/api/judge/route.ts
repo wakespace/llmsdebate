@@ -69,6 +69,22 @@ export async function POST(req: NextRequest) {
       // Strip potential visual prefix or use as is
       const modelId = model.startsWith("openrouter/") ? model.replace("openrouter/", "") : model;
 
+      // Check for models that do not support the 'system' role (like Gemma 3)
+      let openRouterMessages = [...messages];
+      if (model.toLowerCase().includes("gemma")) {
+        const systemMsg = openRouterMessages.find(m => m.role === 'system');
+        if (systemMsg) {
+          openRouterMessages = openRouterMessages.filter(m => m.role !== 'system');
+          const firstUserIndex = openRouterMessages.findIndex(m => m.role === 'user');
+          if (firstUserIndex !== -1) {
+            openRouterMessages[firstUserIndex] = {
+               ...openRouterMessages[firstUserIndex],
+               content: `[INSTRUÇÕES DO SISTEMA/JUIZ]\n${systemMsg.content}\n\n[INÍCIO DO PROMPT]\n${openRouterMessages[firstUserIndex].content}`
+            };
+          }
+        }
+      }
+
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -79,7 +95,7 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({
           model: modelId,
-          messages: messages
+          messages: openRouterMessages
         }),
         signal: AbortSignal.timeout(290000)
       });
@@ -144,16 +160,30 @@ export async function POST(req: NextRequest) {
 
       const modelId = model.replace("openai/", "").replace("chatgpt/", "");
 
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      const isCodex = modelId.includes("codex");
+      const endpoint = isCodex ? "https://api.openai.com/v1/responses" : "https://api.openai.com/v1/chat/completions";
+      
+      let payload: any = {
+        model: modelId
+      };
+
+      if (isCodex) {
+        // Responses API format: flatten messages into a single input string
+        const inputText = messages.map(m => `${m.role.toUpperCase()}:\n${m.content}`).join('\n\n');
+        payload.input = inputText;
+        payload.reasoning = { effort: "high" }; // Defaulting to high reasoning effort as specified by user
+      } else {
+        // Standard Chat API format
+        payload.messages = messages;
+      }
+
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          model: modelId,
-          messages: messages,
-        }),
+        body: JSON.stringify(payload),
         signal: AbortSignal.timeout(290000)
       });
 
@@ -172,7 +202,11 @@ export async function POST(req: NextRequest) {
         throw new Error(`OpenAI Error: ${errText}`);
       }
       const data = await res.json();
-      resultText = data.choices?.[0]?.message?.content || "";
+      if (isCodex) {
+        resultText = data.output_text || "";
+      } else {
+        resultText = data.choices?.[0]?.message?.content || "";
+      }
     }
 
     // 5. Local Models
