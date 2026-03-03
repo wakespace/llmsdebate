@@ -194,7 +194,7 @@ async function fetchOpenAIModels() {
     const data = await res.json();
     
     // Filter conversational models (exclude whisper, tts, dall-e, text-embedding, babbage, etc)
-    const excludePatterns = ['whisper', 'tts', 'dall-e', 'embedding', 'babbage', 'davinci', 'curie', 'ada', 'text-search', 'text-similarity', 'code-search', 'moderation'];
+    const excludePatterns = ['whisper', 'tts', 'dall-e', 'embedding', 'babbage', 'davinci', 'curie', 'ada', 'text-search', 'text-similarity', 'code-search', 'moderation', 'audio', 'image', 'realtime'];
     
     const chatModelsRaw = data.data.filter(m => {
       const id = m.id.toLowerCase();
@@ -236,8 +236,15 @@ async function updateRegistry() {
     const res = await fetch('https://openrouter.ai/api/v1/models');
     if (!res.ok) throw new Error(`Status ${res.status}`);
     const data = await res.json();
-    // Filter only free models
-    const freeModelsRaw = data.data.filter(m => m.pricing?.prompt === "0" && m.pricing?.completion === "0");
+    // Filter only free models and exclude specific image/audio/multimodal ones unless they are general chat models
+    const excludeTerms = ['vision', 'audio', 'image', 'realtime', 'tts', 'whisper', 'dall-e'];
+    const freeModelsRaw = data.data.filter(m => {
+      if (m.pricing?.prompt !== "0" || m.pricing?.completion !== "0") return false;
+      const modelId = m.id.toLowerCase();
+      // Skip models with unwanted terms (note: some vision models are chat models, but user asked to exclude image/audio)
+      if (excludeTerms.some(term => modelId.includes(term))) return false;
+      return true;
+    });
     
     openRouterModels = [];
     for (const m of freeModelsRaw) {
@@ -321,9 +328,12 @@ async function fetchGeminiModels() {
     if (!res.ok) throw new Error(`Status ${res.status}`);
     const data = await res.json();
     
-    // Filter models that support generateContent
+    // Filter models that support generateContent and are not specifically vision/audio only (though Gemini is multimodal, some specific endpoints aren't for chat)
     const validModels = data.models.filter(m => 
-      m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent")
+      m.supportedGenerationMethods && 
+      m.supportedGenerationMethods.includes("generateContent") &&
+      !m.name.toLowerCase().includes("vision") && 
+      !m.name.toLowerCase().includes("audio")
     );
 
     const geminiModels = [];
