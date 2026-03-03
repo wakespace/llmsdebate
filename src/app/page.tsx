@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useDeliberationStore, DeliberationResponse } from "@/store/useDeliberationStore";
 import { InputArea } from "@/components/InputArea";
 import { ModelColumn } from "@/components/ModelColumn";
@@ -55,6 +55,8 @@ export default function Home() {
   } = useDeliberationStore();
 
   const deliberatingRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const sessionIdRef = useRef(0);
 
   useEffect(() => {
     // Only trigger once per deliberating state transition
@@ -87,6 +89,14 @@ export default function Home() {
   }, []);
 
   const executeRound = async () => {
+    // Abort any previous in-flight requests
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    sessionIdRef.current += 1;
+    const currentSessionId = sessionIdRef.current;
     // Check if the user contributed text for this specific round 
     const currentSystemPrompt = useDeliberationStore.getState().activeSystemPrompt;
     
@@ -141,7 +151,8 @@ export default function Home() {
             const res = await fetch(endpoint, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(bodyPayload)
+              body: JSON.stringify(bodyPayload),
+              signal: controller.signal
             });
             
             if (res.ok) {
@@ -266,7 +277,8 @@ export default function Home() {
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(bodyPayload)
+          body: JSON.stringify(bodyPayload),
+          signal: controller.signal
         });
 
         const data = await res.json();
@@ -278,9 +290,13 @@ export default function Home() {
         resultText = isLocal ? data.choices?.[0]?.message?.content : data.text;
         
       } catch (err: unknown) {
+        if (err instanceof DOMException && err.name === 'AbortError') return; // Silently discard aborted requests
         hasError = true;
         errorMsg = err instanceof Error ? err.message : "Falha na requisição";
       }
+
+      // Guard: discard if session changed (user clicked "Nova Deliberação")
+      if (sessionIdRef.current !== currentSessionId) return;
 
       const durationMs = Date.now() - startTime;
       
