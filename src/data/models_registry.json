@@ -1150,18 +1150,6 @@
       "costTier": "caro"
     },
     {
-      "id": "models/nano-banana-pro-preview",
-      "name": "Nano Banana Pro",
-      "provider": "gemini",
-      "free": false,
-      "contextLength": 131072,
-      "description": "Gemini 3 Pro Image Preview",
-      "strengths": [
-        "Uso Geral"
-      ],
-      "costTier": "caro"
-    },
-    {
       "id": "models/gemini-3.1-flash-image-preview",
       "name": "Nano Banana 2",
       "provider": "gemini",

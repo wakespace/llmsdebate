@@ -195,7 +195,7 @@ async function fetchOpenAIModels() {
     const data = await res.json();
     
     // Filter conversational models (exclude whisper, tts, dall-e, text-embedding, babbage, etc)
-    const excludePatterns = ['whisper', 'tts', 'dall-e', 'embedding', 'babbage', 'davinci', 'curie', 'ada', 'text-search', 'text-similarity', 'code-search', 'moderation', 'audio', 'image', 'realtime', 'transcribe', 'nano-banana', 'nano banana'];
+    const excludePatterns = ['whisper', 'tts', 'dall-e', 'embedding', 'babbage', 'davinci', 'curie', 'ada', 'text-search', 'text-similarity', 'code-search', 'moderation', 'audio', 'image', 'realtime', 'transcribe'];
     
     const chatModelsRaw = data.data.filter(m => {
       const id = m.id.toLowerCase();
@@ -238,7 +238,7 @@ async function updateRegistry() {
     if (!res.ok) throw new Error(`Status ${res.status}`);
     const data = await res.json();
     // Filter only free models and exclude specific image/audio/multimodal ones unless they are general chat models
-    const excludeTerms = ['vision', 'audio', 'image', 'realtime', 'tts', 'whisper', 'dall-e', 'transcribe', 'nano-banana', 'nano banana'];
+    const excludeTerms = ['vision', 'audio', 'image', 'realtime', 'tts', 'whisper', 'dall-e', 'transcribe'];
     const freeModelsRaw = data.data.filter(m => {
       if (m.pricing?.prompt !== "0" || m.pricing?.completion !== "0") return false;
       const modelId = m.id.toLowerCase();
@@ -329,12 +329,13 @@ async function fetchGeminiModels() {
     if (!res.ok) throw new Error(`Status ${res.status}`);
     const data = await res.json();
     
-    // Filter models that support generateContent and are not specifically vision/audio only (though Gemini is multimodal, some specific endpoints aren't for chat)
+    // Filter models that support generateContent and are not specifically vision/audio/banana only
     const validModels = data.models.filter(m => 
       m.supportedGenerationMethods && 
       m.supportedGenerationMethods.includes("generateContent") &&
       !m.name.toLowerCase().includes("vision") && 
-      !m.name.toLowerCase().includes("audio")
+      !m.name.toLowerCase().includes("audio") &&
+      !m.name.toLowerCase().includes("banana")
     );
 
     const geminiModels = [];
