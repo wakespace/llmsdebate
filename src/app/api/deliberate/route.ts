@@ -53,24 +53,39 @@ export async function POST(req: NextRequest) {
     // Dispatch to the correct provider
     let resultText = "";
 
-    // 1. Google Gemini (Native API)
-    if (model.includes("gemini")) {
+    // 1. Google Gemini / Gemma (Native API)
+    if (model.includes("gemini") || model.includes("gemma")) {
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) throw new Error("GEMINI_API_KEY não configurada");
       
+      const isGemma = model.includes("gemma");
+      // Extract the model ID (strip "models/" prefix if present for the URL)
+      const modelId = model.startsWith("models/") ? model.replace("models/", "") : model;
+
       // Gemini needs alternating roles context, better structure
       const geminiContents = previousResponses.flatMap((r: PreviousResponse) => [
         { role: "user", parts: [{ text: `[Histórico - ${r.modelName}${r.personaName ? ` (${r.personaName})` : ''} Rodada ${r.round}]:\n${r.text}` }] },
-        { role: "model", parts: [{ text: r.text }] } // Assuming previous responses are from models
+        { role: "model", parts: [{ text: r.text }] }
       ]);
+
+      // For Gemma models, prepend system prompt as a user message since systemInstruction is not supported
+      if (isGemma) {
+        geminiContents.unshift({ role: "user", parts: [{ text: `[INSTRUÇÕES DO SISTEMA]\n${finalSystemPrompt}` }] });
+        geminiContents.splice(1, 0, { role: "model", parts: [{ text: "Entendido. Vou seguir essas instruções." }] });
+      }
+
       geminiContents.push({ role: "user", parts: [{ text: round === 1 ? prompt : `Problema original: ${prompt}\n\nAja como um dos juizes avaliadores desse painel, continue a deliberação considerando o histórico fornecido e produza sua nova Análise e Conclusão Final.` }] });
 
-      const payload = {
-        systemInstruction: { parts: [{ text: finalSystemPrompt }] },
+      const payload: any = {
         contents: geminiContents
       };
 
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
+      // Only add systemInstruction for non-Gemma models
+      if (!isGemma) {
+        payload.systemInstruction = { parts: [{ text: finalSystemPrompt }] };
+      }
+
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
