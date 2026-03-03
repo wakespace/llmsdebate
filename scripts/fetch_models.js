@@ -195,7 +195,7 @@ async function fetchOpenAIModels() {
     const data = await res.json();
     
     // Filter conversational models (exclude whisper, tts, dall-e, text-embedding, babbage, etc)
-    const excludePatterns = ['whisper', 'tts', 'dall-e', 'embedding', 'babbage', 'davinci', 'curie', 'ada', 'text-search', 'text-similarity', 'code-search', 'moderation', 'audio', 'image', 'realtime', 'transcribe'];
+    const excludePatterns = ['whisper', 'tts', 'dall-e', 'embedding', 'babbage', 'davinci', 'curie', 'ada', 'text-search', 'text-similarity', 'code-search', 'moderation', 'audio', 'image', 'realtime', 'transcribe', 'nano-banana', 'nano banana'];
     
     const chatModelsRaw = data.data.filter(m => {
       const id = m.id.toLowerCase();
@@ -238,7 +238,7 @@ async function updateRegistry() {
     if (!res.ok) throw new Error(`Status ${res.status}`);
     const data = await res.json();
     // Filter only free models and exclude specific image/audio/multimodal ones unless they are general chat models
-    const excludeTerms = ['vision', 'audio', 'image', 'realtime', 'tts', 'whisper', 'dall-e', 'transcribe'];
+    const excludeTerms = ['vision', 'audio', 'image', 'realtime', 'tts', 'whisper', 'dall-e', 'transcribe', 'nano-banana', 'nano banana'];
     const freeModelsRaw = data.data.filter(m => {
       if (m.pricing?.prompt !== "0" || m.pricing?.completion !== "0") return false;
       const modelId = m.id.toLowerCase();

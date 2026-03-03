@@ -339,6 +339,58 @@
       "costTier": "caro"
     },
     {
+      "id": "openai/o3-deep-research-2025-06-26",
+      "name": "o3-deep-research-2025-06-26",
+      "provider": "openai",
+      "free": false,
+      "contextLength": 8192,
+      "description": "Modelo oficial da OpenAI (o3-deep-research-2025-06-26). Atualizado com limites de contexto estipulados off-API.",
+      "strengths": [
+        "Raciocínio Avançado",
+        "Matemática"
+      ],
+      "costTier": "caro"
+    },
+    {
+      "id": "openai/o3-deep-research",
+      "name": "o3-deep-research",
+      "provider": "openai",
+      "free": false,
+      "contextLength": 8192,
+      "description": "Modelo oficial da OpenAI (o3-deep-research). Atualizado com limites de contexto estipulados off-API.",
+      "strengths": [
+        "Raciocínio Avançado",
+        "Matemática"
+      ],
+      "costTier": "caro"
+    },
+    {
+      "id": "openai/o3-pro-2025-06-10",
+      "name": "o3-pro-2025-06-10",
+      "provider": "openai",
+      "free": false,
+      "contextLength": 8192,
+      "description": "Modelo oficial da OpenAI (o3-pro-2025-06-10). Atualizado com limites de contexto estipulados off-API.",
+      "strengths": [
+        "Raciocínio Avançado",
+        "Matemática"
+      ],
+      "costTier": "caro"
+    },
+    {
+      "id": "openai/o3-pro",
+      "name": "o3-pro",
+      "provider": "openai",
+      "free": false,
+      "contextLength": 8192,
+      "description": "Modelo oficial da OpenAI (o3-pro). Atualizado com limites de contexto estipulados off-API.",
+      "strengths": [
+        "Raciocínio Avançado",
+        "Matemática"
+      ],
+      "costTier": "caro"
+    },
+    {
       "id": "openai/gpt-4.1-nano",
       "name": "gpt-4.1-nano",
       "provider": "openai",
