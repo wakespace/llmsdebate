@@ -2,7 +2,7 @@
   "openai": [
     {
       "id": "openai/gpt-4o-search-preview-2025-03-11",
-      "name": "OpenAI: gpt-4o-search-preview-2025-03-11",
+      "name": "gpt-4o-search-preview-2025-03-11",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -15,7 +15,7 @@
     },
     {
       "id": "openai/gpt-4o-search-preview",
-      "name": "OpenAI: gpt-4o-search-preview",
+      "name": "gpt-4o-search-preview",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -28,7 +28,7 @@
     },
     {
       "id": "openai/gpt-audio-1.5",
-      "name": "OpenAI: gpt-audio-1.5",
+      "name": "gpt-audio-1.5",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -40,7 +40,7 @@
     },
     {
       "id": "openai/gpt-realtime-1.5",
-      "name": "OpenAI: gpt-realtime-1.5",
+      "name": "gpt-realtime-1.5",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -52,7 +52,7 @@
     },
     {
       "id": "openai/gpt-5.3-codex",
-      "name": "OpenAI: gpt-5.3-codex",
+      "name": "gpt-5.3-codex",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -64,7 +64,7 @@
     },
     {
       "id": "openai/gpt-5.2-codex",
-      "name": "OpenAI: gpt-5.2-codex",
+      "name": "gpt-5.2-codex",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -76,7 +76,7 @@
     },
     {
       "id": "openai/chatgpt-image-latest",
-      "name": "OpenAI: chatgpt-image-latest",
+      "name": "chatgpt-image-latest",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -88,7 +88,7 @@
     },
     {
       "id": "openai/gpt-audio-mini-2025-12-15",
-      "name": "OpenAI: gpt-audio-mini-2025-12-15",
+      "name": "gpt-audio-mini-2025-12-15",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -100,7 +100,7 @@
     },
     {
       "id": "openai/gpt-realtime-mini-2025-12-15",
-      "name": "OpenAI: gpt-realtime-mini-2025-12-15",
+      "name": "gpt-realtime-mini-2025-12-15",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -112,7 +112,7 @@
     },
     {
       "id": "openai/gpt-4o-mini-transcribe-2025-03-20",
-      "name": "OpenAI: gpt-4o-mini-transcribe-2025-03-20",
+      "name": "gpt-4o-mini-transcribe-2025-03-20",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -125,7 +125,7 @@
     },
     {
       "id": "openai/gpt-4o-mini-transcribe-2025-12-15",
-      "name": "OpenAI: gpt-4o-mini-transcribe-2025-12-15",
+      "name": "gpt-4o-mini-transcribe-2025-12-15",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -138,7 +138,7 @@
     },
     {
       "id": "openai/gpt-5.2-chat-latest",
-      "name": "OpenAI: gpt-5.2-chat-latest",
+      "name": "gpt-5.2-chat-latest",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -150,7 +150,7 @@
     },
     {
       "id": "openai/gpt-5.2-pro",
-      "name": "OpenAI: gpt-5.2-pro",
+      "name": "gpt-5.2-pro",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -162,7 +162,7 @@
     },
     {
       "id": "openai/gpt-5.2-pro-2025-12-11",
-      "name": "OpenAI: gpt-5.2-pro-2025-12-11",
+      "name": "gpt-5.2-pro-2025-12-11",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -174,7 +174,7 @@
     },
     {
       "id": "openai/gpt-5.2",
-      "name": "OpenAI: gpt-5.2",
+      "name": "gpt-5.2",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -186,7 +186,7 @@
     },
     {
       "id": "openai/gpt-5.2-2025-12-11",
-      "name": "OpenAI: gpt-5.2-2025-12-11",
+      "name": "gpt-5.2-2025-12-11",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -198,7 +198,7 @@
     },
     {
       "id": "openai/gpt-image-1.5",
-      "name": "OpenAI: gpt-image-1.5",
+      "name": "gpt-image-1.5",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -210,7 +210,7 @@
     },
     {
       "id": "openai/gpt-5.1-codex-max",
-      "name": "OpenAI: gpt-5.1-codex-max",
+      "name": "gpt-5.1-codex-max",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -222,7 +222,7 @@
     },
     {
       "id": "openai/gpt-5.1-codex-mini",
-      "name": "OpenAI: gpt-5.1-codex-mini",
+      "name": "gpt-5.1-codex-mini",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -234,7 +234,7 @@
     },
     {
       "id": "openai/gpt-5.1-codex",
-      "name": "OpenAI: gpt-5.1-codex",
+      "name": "gpt-5.1-codex",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -246,7 +246,7 @@
     },
     {
       "id": "openai/gpt-5.1",
-      "name": "OpenAI: gpt-5.1",
+      "name": "gpt-5.1",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -258,7 +258,7 @@
     },
     {
       "id": "openai/gpt-5.1-2025-11-13",
-      "name": "OpenAI: gpt-5.1-2025-11-13",
+      "name": "gpt-5.1-2025-11-13",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -270,7 +270,7 @@
     },
     {
       "id": "openai/gpt-5.1-chat-latest",
-      "name": "OpenAI: gpt-5.1-chat-latest",
+      "name": "gpt-5.1-chat-latest",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -282,7 +282,7 @@
     },
     {
       "id": "openai/gpt-5-search-api-2025-10-14",
-      "name": "OpenAI: gpt-5-search-api-2025-10-14",
+      "name": "gpt-5-search-api-2025-10-14",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -294,7 +294,7 @@
     },
     {
       "id": "openai/gpt-realtime-mini-2025-10-06",
-      "name": "OpenAI: gpt-realtime-mini-2025-10-06",
+      "name": "gpt-realtime-mini-2025-10-06",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -306,7 +306,7 @@
     },
     {
       "id": "openai/gpt-realtime-mini",
-      "name": "OpenAI: gpt-realtime-mini",
+      "name": "gpt-realtime-mini",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -318,7 +318,7 @@
     },
     {
       "id": "openai/gpt-5-search-api",
-      "name": "OpenAI: gpt-5-search-api",
+      "name": "gpt-5-search-api",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -330,7 +330,7 @@
     },
     {
       "id": "openai/gpt-audio-mini-2025-10-06",
-      "name": "OpenAI: gpt-audio-mini-2025-10-06",
+      "name": "gpt-audio-mini-2025-10-06",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -342,7 +342,7 @@
     },
     {
       "id": "openai/gpt-audio-mini",
-      "name": "OpenAI: gpt-audio-mini",
+      "name": "gpt-audio-mini",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -354,7 +354,7 @@
     },
     {
       "id": "openai/gpt-5-pro",
-      "name": "OpenAI: gpt-5-pro",
+      "name": "gpt-5-pro",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -366,7 +366,7 @@
     },
     {
       "id": "openai/gpt-5-pro-2025-10-06",
-      "name": "OpenAI: gpt-5-pro-2025-10-06",
+      "name": "gpt-5-pro-2025-10-06",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -378,7 +378,7 @@
     },
     {
       "id": "openai/gpt-image-1-mini",
-      "name": "OpenAI: gpt-image-1-mini",
+      "name": "gpt-image-1-mini",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -390,7 +390,7 @@
     },
     {
       "id": "openai/gpt-5-codex",
-      "name": "OpenAI: gpt-5-codex",
+      "name": "gpt-5-codex",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -402,7 +402,7 @@
     },
     {
       "id": "openai/gpt-audio",
-      "name": "OpenAI: gpt-audio",
+      "name": "gpt-audio",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -414,7 +414,7 @@
     },
     {
       "id": "openai/gpt-realtime-2025-08-28",
-      "name": "OpenAI: gpt-realtime-2025-08-28",
+      "name": "gpt-realtime-2025-08-28",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -426,7 +426,7 @@
     },
     {
       "id": "openai/gpt-realtime",
-      "name": "OpenAI: gpt-realtime",
+      "name": "gpt-realtime",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -438,7 +438,7 @@
     },
     {
       "id": "openai/gpt-audio-2025-08-28",
-      "name": "OpenAI: gpt-audio-2025-08-28",
+      "name": "gpt-audio-2025-08-28",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -450,7 +450,7 @@
     },
     {
       "id": "openai/gpt-5-nano",
-      "name": "OpenAI: gpt-5-nano",
+      "name": "gpt-5-nano",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -462,7 +462,7 @@
     },
     {
       "id": "openai/gpt-5-nano-2025-08-07",
-      "name": "OpenAI: gpt-5-nano-2025-08-07",
+      "name": "gpt-5-nano-2025-08-07",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -474,7 +474,7 @@
     },
     {
       "id": "openai/gpt-5-mini",
-      "name": "OpenAI: gpt-5-mini",
+      "name": "gpt-5-mini",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -486,7 +486,7 @@
     },
     {
       "id": "openai/gpt-5-mini-2025-08-07",
-      "name": "OpenAI: gpt-5-mini-2025-08-07",
+      "name": "gpt-5-mini-2025-08-07",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -498,7 +498,7 @@
     },
     {
       "id": "openai/gpt-5",
-      "name": "OpenAI: gpt-5",
+      "name": "gpt-5",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -510,7 +510,7 @@
     },
     {
       "id": "openai/gpt-5-2025-08-07",
-      "name": "OpenAI: gpt-5-2025-08-07",
+      "name": "gpt-5-2025-08-07",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -522,7 +522,7 @@
     },
     {
       "id": "openai/gpt-5-chat-latest",
-      "name": "OpenAI: gpt-5-chat-latest",
+      "name": "gpt-5-chat-latest",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -534,7 +534,7 @@
     },
     {
       "id": "openai/gpt-4o-transcribe-diarize",
-      "name": "OpenAI: gpt-4o-transcribe-diarize",
+      "name": "gpt-4o-transcribe-diarize",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -547,7 +547,7 @@
     },
     {
       "id": "openai/gpt-4o-audio-preview-2025-06-03",
-      "name": "OpenAI: gpt-4o-audio-preview-2025-06-03",
+      "name": "gpt-4o-audio-preview-2025-06-03",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -560,7 +560,7 @@
     },
     {
       "id": "openai/gpt-4o-realtime-preview-2025-06-03",
-      "name": "OpenAI: gpt-4o-realtime-preview-2025-06-03",
+      "name": "gpt-4o-realtime-preview-2025-06-03",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -573,7 +573,7 @@
     },
     {
       "id": "openai/gpt-image-1",
-      "name": "OpenAI: gpt-image-1",
+      "name": "gpt-image-1",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -585,7 +585,7 @@
     },
     {
       "id": "openai/gpt-4.1-nano",
-      "name": "OpenAI: gpt-4.1-nano",
+      "name": "gpt-4.1-nano",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -597,7 +597,7 @@
     },
     {
       "id": "openai/gpt-4.1-nano-2025-04-14",
-      "name": "OpenAI: gpt-4.1-nano-2025-04-14",
+      "name": "gpt-4.1-nano-2025-04-14",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -609,7 +609,7 @@
     },
     {
       "id": "openai/gpt-4.1-mini",
-      "name": "OpenAI: gpt-4.1-mini",
+      "name": "gpt-4.1-mini",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -621,7 +621,7 @@
     },
     {
       "id": "openai/gpt-4.1-mini-2025-04-14",
-      "name": "OpenAI: gpt-4.1-mini-2025-04-14",
+      "name": "gpt-4.1-mini-2025-04-14",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -633,7 +633,7 @@
     },
     {
       "id": "openai/gpt-4.1",
-      "name": "OpenAI: gpt-4.1",
+      "name": "gpt-4.1",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -645,7 +645,7 @@
     },
     {
       "id": "openai/gpt-4.1-2025-04-14",
-      "name": "OpenAI: gpt-4.1-2025-04-14",
+      "name": "gpt-4.1-2025-04-14",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -657,7 +657,7 @@
     },
     {
       "id": "openai/o3",
-      "name": "OpenAI: o3",
+      "name": "o3",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -670,7 +670,7 @@
     },
     {
       "id": "openai/o3-2025-04-16",
-      "name": "OpenAI: o3-2025-04-16",
+      "name": "o3-2025-04-16",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -683,7 +683,7 @@
     },
     {
       "id": "openai/o1-pro",
-      "name": "OpenAI: o1-pro",
+      "name": "o1-pro",
       "provider": "openai",
       "free": false,
       "contextLength": 200000,
@@ -696,7 +696,7 @@
     },
     {
       "id": "openai/o1-pro-2025-03-19",
-      "name": "OpenAI: o1-pro-2025-03-19",
+      "name": "o1-pro-2025-03-19",
       "provider": "openai",
       "free": false,
       "contextLength": 200000,
@@ -709,7 +709,7 @@
     },
     {
       "id": "openai/gpt-4o-mini-transcribe",
-      "name": "OpenAI: gpt-4o-mini-transcribe",
+      "name": "gpt-4o-mini-transcribe",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -722,7 +722,7 @@
     },
     {
       "id": "openai/gpt-4o-transcribe",
-      "name": "OpenAI: gpt-4o-transcribe",
+      "name": "gpt-4o-transcribe",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -735,7 +735,7 @@
     },
     {
       "id": "openai/gpt-4o-mini-search-preview",
-      "name": "OpenAI: gpt-4o-mini-search-preview",
+      "name": "gpt-4o-mini-search-preview",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -748,7 +748,7 @@
     },
     {
       "id": "openai/gpt-4o-mini-search-preview-2025-03-11",
-      "name": "OpenAI: gpt-4o-mini-search-preview-2025-03-11",
+      "name": "gpt-4o-mini-search-preview-2025-03-11",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -761,7 +761,7 @@
     },
     {
       "id": "openai/gpt-4o-2024-11-20",
-      "name": "OpenAI: gpt-4o-2024-11-20",
+      "name": "gpt-4o-2024-11-20",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -774,7 +774,7 @@
     },
     {
       "id": "openai/o3-mini-2025-01-31",
-      "name": "OpenAI: o3-mini-2025-01-31",
+      "name": "o3-mini-2025-01-31",
       "provider": "openai",
       "free": false,
       "contextLength": 200000,
@@ -787,7 +787,7 @@
     },
     {
       "id": "openai/o3-mini",
-      "name": "OpenAI: o3-mini",
+      "name": "o3-mini",
       "provider": "openai",
       "free": false,
       "contextLength": 200000,
@@ -800,7 +800,7 @@
     },
     {
       "id": "openai/gpt-4o-mini-audio-preview",
-      "name": "OpenAI: gpt-4o-mini-audio-preview",
+      "name": "gpt-4o-mini-audio-preview",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -813,7 +813,7 @@
     },
     {
       "id": "openai/gpt-4o-mini-realtime-preview",
-      "name": "OpenAI: gpt-4o-mini-realtime-preview",
+      "name": "gpt-4o-mini-realtime-preview",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -826,7 +826,7 @@
     },
     {
       "id": "openai/o1",
-      "name": "OpenAI: o1",
+      "name": "o1",
       "provider": "openai",
       "free": false,
       "contextLength": 200000,
@@ -839,7 +839,7 @@
     },
     {
       "id": "openai/o1-2024-12-17",
-      "name": "OpenAI: o1-2024-12-17",
+      "name": "o1-2024-12-17",
       "provider": "openai",
       "free": false,
       "contextLength": 200000,
@@ -852,7 +852,7 @@
     },
     {
       "id": "openai/gpt-4o-mini-audio-preview-2024-12-17",
-      "name": "OpenAI: gpt-4o-mini-audio-preview-2024-12-17",
+      "name": "gpt-4o-mini-audio-preview-2024-12-17",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -865,7 +865,7 @@
     },
     {
       "id": "openai/gpt-4o-mini-realtime-preview-2024-12-17",
-      "name": "OpenAI: gpt-4o-mini-realtime-preview-2024-12-17",
+      "name": "gpt-4o-mini-realtime-preview-2024-12-17",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -878,7 +878,7 @@
     },
     {
       "id": "openai/gpt-4o-audio-preview-2024-12-17",
-      "name": "OpenAI: gpt-4o-audio-preview-2024-12-17",
+      "name": "gpt-4o-audio-preview-2024-12-17",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -891,7 +891,7 @@
     },
     {
       "id": "openai/gpt-4o-realtime-preview-2024-12-17",
-      "name": "OpenAI: gpt-4o-realtime-preview-2024-12-17",
+      "name": "gpt-4o-realtime-preview-2024-12-17",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -904,7 +904,7 @@
     },
     {
       "id": "openai/gpt-4o-realtime-preview",
-      "name": "OpenAI: gpt-4o-realtime-preview",
+      "name": "gpt-4o-realtime-preview",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -917,7 +917,7 @@
     },
     {
       "id": "openai/gpt-4o-audio-preview",
-      "name": "OpenAI: gpt-4o-audio-preview",
+      "name": "gpt-4o-audio-preview",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -930,7 +930,7 @@
     },
     {
       "id": "openai/gpt-4o-2024-08-06",
-      "name": "OpenAI: gpt-4o-2024-08-06",
+      "name": "gpt-4o-2024-08-06",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -943,7 +943,7 @@
     },
     {
       "id": "openai/gpt-4o-mini",
-      "name": "OpenAI: gpt-4o-mini",
+      "name": "gpt-4o-mini",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -956,7 +956,7 @@
     },
     {
       "id": "openai/gpt-4o-mini-2024-07-18",
-      "name": "OpenAI: gpt-4o-mini-2024-07-18",
+      "name": "gpt-4o-mini-2024-07-18",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -969,7 +969,7 @@
     },
     {
       "id": "openai/gpt-4o-2024-05-13",
-      "name": "OpenAI: gpt-4o-2024-05-13",
+      "name": "gpt-4o-2024-05-13",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -982,7 +982,7 @@
     },
     {
       "id": "openai/gpt-4o",
-      "name": "OpenAI: gpt-4o",
+      "name": "gpt-4o",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -995,7 +995,7 @@
     },
     {
       "id": "openai/gpt-4-turbo-2024-04-09",
-      "name": "OpenAI: gpt-4-turbo-2024-04-09",
+      "name": "gpt-4-turbo-2024-04-09",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -1007,7 +1007,7 @@
     },
     {
       "id": "openai/gpt-4-turbo",
-      "name": "OpenAI: gpt-4-turbo",
+      "name": "gpt-4-turbo",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -1019,7 +1019,7 @@
     },
     {
       "id": "openai/gpt-3.5-turbo-0125",
-      "name": "OpenAI: gpt-3.5-turbo-0125",
+      "name": "gpt-3.5-turbo-0125",
       "provider": "openai",
       "free": false,
       "contextLength": 16384,
@@ -1031,7 +1031,7 @@
     },
     {
       "id": "openai/gpt-4-turbo-preview",
-      "name": "OpenAI: gpt-4-turbo-preview",
+      "name": "gpt-4-turbo-preview",
       "provider": "openai",
       "free": false,
       "contextLength": 128000,
@@ -1043,7 +1043,7 @@
     },
     {
       "id": "openai/gpt-4-0125-preview",
-      "name": "OpenAI: gpt-4-0125-preview",
+      "name": "gpt-4-0125-preview",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -1055,7 +1055,7 @@
     },
     {
       "id": "openai/gpt-3.5-turbo-1106",
-      "name": "OpenAI: gpt-3.5-turbo-1106",
+      "name": "gpt-3.5-turbo-1106",
       "provider": "openai",
       "free": false,
       "contextLength": 16384,
@@ -1067,7 +1067,7 @@
     },
     {
       "id": "openai/gpt-4-1106-preview",
-      "name": "OpenAI: gpt-4-1106-preview",
+      "name": "gpt-4-1106-preview",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -1079,7 +1079,7 @@
     },
     {
       "id": "openai/gpt-3.5-turbo-instruct-0914",
-      "name": "OpenAI: gpt-3.5-turbo-instruct-0914",
+      "name": "gpt-3.5-turbo-instruct-0914",
       "provider": "openai",
       "free": false,
       "contextLength": 16384,
@@ -1091,7 +1091,7 @@
     },
     {
       "id": "openai/gpt-3.5-turbo-instruct",
-      "name": "OpenAI: gpt-3.5-turbo-instruct",
+      "name": "gpt-3.5-turbo-instruct",
       "provider": "openai",
       "free": false,
       "contextLength": 16384,
@@ -1103,7 +1103,7 @@
     },
     {
       "id": "openai/gpt-4",
-      "name": "OpenAI: gpt-4",
+      "name": "gpt-4",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -1115,7 +1115,7 @@
     },
     {
       "id": "openai/gpt-4-0613",
-      "name": "OpenAI: gpt-4-0613",
+      "name": "gpt-4-0613",
       "provider": "openai",
       "free": false,
       "contextLength": 8192,
@@ -1127,7 +1127,7 @@
     },
     {
       "id": "openai/gpt-3.5-turbo-16k",
-      "name": "OpenAI: gpt-3.5-turbo-16k",
+      "name": "gpt-3.5-turbo-16k",
       "provider": "openai",
       "free": false,
       "contextLength": 16384,
@@ -1139,7 +1139,7 @@
     },
     {
       "id": "openai/gpt-3.5-turbo",
-      "name": "OpenAI: gpt-3.5-turbo",
+      "name": "gpt-3.5-turbo",
       "provider": "openai",
       "free": false,
       "contextLength": 16384,
