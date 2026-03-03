@@ -7,8 +7,6 @@ import ReactMarkdown from "react-markdown";
 import { ALL_MODELS } from "@/lib/models";
 import registryData from "@/data/models_registry.json";
 
-const allDynamicModels = Object.values(registryData).flat();
-
 export function ActionControls() {
   const { status, round, responses, selectedModels, startNextRound, endWithFullTranscript, synthesisResult, fullTranscriptResult, clearSynthesis, clearFullTranscript, selectedResponseIds, selectAllResponses, clearResponseSelection, isJudging, openSynthesisModal, judgeModelsIds } = useDeliberationStore();
   const [synthesisModel, setSynthesisModel] = useState<string>("");
@@ -204,12 +202,14 @@ export function ActionControls() {
             className="bg-black/20 border border-white/10 text-zinc-300 text-sm rounded-xl px-4 py-3 focus:ring-white/30 focus:border-white/30 outline-none max-w-[220px] shadow-inner disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed backdrop-blur-md"
           >
             <option value="" disabled>Sintetizar com...</option>
-            {allDynamicModels
-              .filter(m => judgeModelsIds.includes(m.id))
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map(m => (
-              <option key={m.id} value={m.id}>{m.name}</option>
-            ))}
+            {(() => {
+              const allDynamic = Object.values(registryData).flat();
+              // Combine ALL_MODELS and dynamic models, keeping unique IDs
+              const combined = Array.from(new Map([...ALL_MODELS, ...allDynamic].map(m => [m.id, m])).values());
+              return combined.filter(m => judgeModelsIds.includes(m.id)).map(m => (
+                <option key={m.id} value={m.id}>{m.name}</option>
+              ));
+            })()}
           </select>
 
           {/* Split Button: Encerrar */}

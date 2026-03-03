@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { ALL_MODELS, isDefaultJudge } from '@/lib/models';
+import { ALL_MODELS, isDefaultJudge, type ModelInfo } from '@/lib/models';
+import registryData from "@/data/models_registry.json";
 
 export const DEFAULT_SYSTEM_PROMPT = "Você é um especialista participando num Sistema de Deliberação Assistida por LLMs. Responda SEMPRE em Português do Brasil. IMPORTANTE: Estruture a sua resposta usando EXATAMENTE duas marcações Markdown: '## Análise' e '## Conclusão Final'. Seja claro, estruturado e profissional.";
 
@@ -520,7 +521,11 @@ export const useDeliberationStore = create<State>()(
           }
 
           if (!state.hasSeededJudgeModels) {
-             const defaultJudges = ALL_MODELS.filter(isDefaultJudge).map(m => m.id);
+             const allDynamicModels = Object.values(registryData).flat() as ModelInfo[];
+             const combinedModels = [...ALL_MODELS, ...allDynamicModels];
+             const uniqueModels = Array.from(new Map(combinedModels.map(item => [item.id, item])).values());
+             
+             const defaultJudges = uniqueModels.filter(isDefaultJudge).map(m => m.id);
              useDeliberationStore.setState({
                hasSeededJudgeModels: true,
                judgeModelsIds: [...new Set([...state.judgeModelsIds, ...defaultJudges])]

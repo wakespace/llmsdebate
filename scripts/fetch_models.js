@@ -206,7 +206,7 @@ async function fetchOpenAIModels() {
     for (const m of chatModelsRaw) {
        openAIModels.push({
          id: `openai/${m.id}`,
-         name: m.id,
+         name: `OpenAI: ${m.id}`,
          provider: "openai",
          free: false,
          contextLength: getOpenAIContextLength(m.id),
