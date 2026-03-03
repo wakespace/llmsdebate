@@ -275,7 +275,7 @@ export function InputArea() {
               >
                 <Settings2 className="w-4 h-4" />
               </button>
-              <Link href="/models" target="_blank" className="text-zinc-600 hover:text-white transition-colors" title="Ver detalhes dos modelos">
+              <Link href="/models" className="text-zinc-600 hover:text-white transition-colors" title="Ver detalhes dos modelos">
                 <HelpCircle className="w-4 h-4" />
               </Link>
             </div>
