@@ -202,10 +202,13 @@ export function ActionControls() {
           >
             <option value="" disabled>Sintetizar com...</option>
             {ALL_MODELS.filter(m => {
+              const id = m.id.toLowerCase();
               const isFree = m.free === true;
               const hasImmenseContext = (m.contextLength ?? 0) >= 1000000;
-              const isThinking = m.id.toLowerCase().includes('thinking') || m.name.toLowerCase().includes('thinking') || m.strengths.some(s => s.toLowerCase().includes('thinking') || s.toLowerCase().includes('pensamento'));
-              return isFree || hasImmenseContext || isThinking;
+              const isThinking = id.includes('thinking') || m.name.toLowerCase().includes('thinking') || m.strengths.some(s => s.toLowerCase().includes('thinking') || s.toLowerCase().includes('pensamento')) || id.includes('reasoning') || id.startsWith('o1') || id.startsWith('o3');
+              const isHeavyweight = id.includes('gemini-3.1-pro') || id.includes('gemini-3-pro') || id.includes('gemini-2.5-pro') || id.includes('gpt-5.2-pro') || id.includes('gpt-5-pro') || id.includes('gpt-5.2') || id.includes('gpt-4o') || id.includes('gpt-4-turbo') || id.includes('hermes-3-405b') || id.includes('llama-3.3-70b') || id.includes('qwen3-next-80b') || id.includes('trinity-large');
+              
+              return isFree || hasImmenseContext || isThinking || isHeavyweight;
             }).map(m => (
               <option key={m.id} value={m.id}>{m.name}</option>
             ))}
