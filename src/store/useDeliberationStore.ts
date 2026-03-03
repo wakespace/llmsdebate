@@ -131,6 +131,7 @@ interface State {
   addModelInstance: (modelId: string) => void;
   addAllModelInstances: (modelIds: string[]) => void;
   removeModelInstance: (instanceId: string) => void;
+  setModelInstanceCount: (modelId: string, count: number) => void;
   clearAllInstances: () => void;
   setInstancePersona: (instanceId: string, personaId?: string) => void;
   toggleInstanceSelection: (instanceId: string) => void;
@@ -267,6 +268,34 @@ export const useDeliberationStore = create<State>()(
           activeInstances: state.activeInstances.filter(inst => inst.id !== instanceId),
           selectedModels: state.selectedModels.filter(id => id !== instanceId)
         };
+      }),
+
+      setModelInstanceCount: (modelId, count) => set((state) => {
+        const currentInstances = state.activeInstances.filter(inst => inst.modelId === modelId);
+        const currentCount = currentInstances.length;
+        
+        if (count === currentCount) return {};
+        
+        if (count > currentCount) {
+          // Add more instances
+          const toAdd = count - currentCount;
+          const newInstances = Array.from({ length: toAdd }, () => {
+            const newId = `${modelId}_${Math.random().toString(36).substr(2, 9)}`;
+            return { id: newId, modelId };
+          });
+          return {
+            activeInstances: [...state.activeInstances, ...newInstances],
+            selectedModels: [...state.selectedModels, ...newInstances.map(i => i.id)]
+          };
+        } else {
+          // Remove excess instances (remove from the end)
+          const toRemove = currentInstances.slice(count);
+          const removeIds = new Set(toRemove.map(i => i.id));
+          return {
+            activeInstances: state.activeInstances.filter(inst => !removeIds.has(inst.id)),
+            selectedModels: state.selectedModels.filter(id => !removeIds.has(id))
+          };
+        }
       }),
 
       clearAllInstances: () => set({
