@@ -160,21 +160,20 @@ export async function POST(req: NextRequest) {
 
       const modelId = model.replace("openai/", "").replace("chatgpt/", "");
 
-      const isCodex = modelId.includes("codex");
-      const endpoint = isCodex ? "https://api.openai.com/v1/responses" : "https://api.openai.com/v1/chat/completions";
+      const endpoint = "https://api.openai.com/v1/responses";
       
       let payload: any = {
         model: modelId
       };
 
-      if (isCodex) {
-        // Responses API format: flatten messages into a single input string
-        const inputText = messages.map(m => `${m.role.toUpperCase()}:\n${m.content}`).join('\n\n');
-        payload.input = inputText;
-        payload.reasoning = { effort: "high" }; // Defaulting to high reasoning effort as specified by user
-      } else {
-        // Standard Chat API format
-        payload.messages = messages;
+      // Responses API format: flatten messages into a single input string
+      const inputText = messages.map(m => `${m.role.toUpperCase()}:\n${m.content}`).join('\n\n');
+      payload.input = inputText;
+
+      // Add reasoning effort for models that heavily leverage it
+      const needsReasoning = modelId.includes("codex") || modelId.includes("pro") || /^(o1|o3|o4)/.test(modelId);
+      if (needsReasoning) {
+        payload.reasoning = { effort: "high" };
       }
 
       const res = await fetch(endpoint, {
@@ -202,11 +201,8 @@ export async function POST(req: NextRequest) {
         throw new Error(`OpenAI Error: ${errText}`);
       }
       const data = await res.json();
-      if (isCodex) {
-        resultText = data.output_text || "";
-      } else {
-        resultText = data.choices?.[0]?.message?.content || "";
-      }
+      const messageBlock = data.output?.find((o: any) => o.type === "message" || o.content);
+      resultText = messageBlock?.content?.find((c: any) => c.type === 'output_text')?.text || data.choices?.[0]?.message?.content || "";
     }
 
     // 5. Local Models
