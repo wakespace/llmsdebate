@@ -129,7 +129,9 @@ interface State {
   toggleActiveModel: (modelId: string) => void; // Legacy toggle (deprecated)
   
   addModelInstance: (modelId: string) => void;
+  addAllModelInstances: (modelIds: string[]) => void;
   removeModelInstance: (instanceId: string) => void;
+  clearAllInstances: () => void;
   setInstancePersona: (instanceId: string, personaId?: string) => void;
   toggleInstanceSelection: (instanceId: string) => void;
   
@@ -241,11 +243,35 @@ export const useDeliberationStore = create<State>()(
         };
       }),
 
+      addAllModelInstances: (modelIds) => set((state) => {
+        const newInstances: ModelInstance[] = [];
+        const newSelected = [...state.selectedModels];
+        
+        modelIds.forEach(modelId => {
+           // Skip if the user already has at least one instance of this model
+           if (!state.activeInstances.some(inst => inst.modelId === modelId)) {
+             const newInstanceId = `${modelId}_${Math.random().toString(36).substr(2, 9)}`;
+             newInstances.push({ id: newInstanceId, modelId });
+             newSelected.push(newInstanceId);
+           }
+        });
+
+        return {
+           activeInstances: [...state.activeInstances, ...newInstances],
+           selectedModels: newSelected
+        };
+      }),
+
       removeModelInstance: (instanceId) => set((state) => {
         return {
           activeInstances: state.activeInstances.filter(inst => inst.id !== instanceId),
           selectedModels: state.selectedModels.filter(id => id !== instanceId)
         };
+      }),
+
+      clearAllInstances: () => set({
+        activeInstances: [],
+        selectedModels: []
       }),
 
       setInstancePersona: (instanceId, personaId) => set((state) => {

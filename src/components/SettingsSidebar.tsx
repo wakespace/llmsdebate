@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Settings, X, Server, BrainCircuit, Globe, Bot } from "lucide-react";
+import { Settings, X, Server, BrainCircuit, Globe, Bot, CheckSquare } from "lucide-react";
 import { useDeliberationStore } from "@/store/useDeliberationStore";
 import registryData from "@/data/models_registry.json";
 import { ProviderAccordion } from "./ProviderAccordion";
 import Link from "next/link";
 
 export function SettingsSidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const { personas, activePersonasIds, toggleActivePersona, systemPrompts, activeInitialPromptId, activeRoundPromptId, setActivePrompt } = useDeliberationStore();
+  const { personas, activePersonasIds, toggleActivePersona, systemPrompts, activeInitialPromptId, activeRoundPromptId, setActivePrompt, clearAllInstances, activeInstances, addAllModelInstances } = useDeliberationStore();
   const [activeTab, setActiveTab] = useState("models");
 
   // Prevent scrolling on background when sidebar is open
@@ -90,9 +90,36 @@ export function SettingsSidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
         <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
           {activeTab === "models" && (
             <div className="mb-6 animate-fade-in">
-              <h3 className="text-sm font-semibold tracking-widest text-zinc-500 uppercase mb-4">
-                Modelos e Provedores
-              </h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold tracking-widest text-zinc-500 uppercase">
+                  Modelos e Provedores
+                </h3>
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => {
+                      const allModelIds = [
+                        ...registryData.openrouter,
+                        ...registryData.openai,
+                        ...registryData.gemini,
+                        ...registryData.perplexity,
+                        ...registryData.local
+                      ].map(m => m.id);
+                      addAllModelInstances(allModelIds);
+                    }}
+                    className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-emerald-500/20 transition-colors shadow-lg flex items-center gap-1 block w-fit"
+                  >
+                    <CheckSquare className="w-3 h-3" /> Selecionar Todos
+                  </button>
+                  {activeInstances.length > 0 && (
+                    <button 
+                      onClick={clearAllInstances}
+                      className="bg-red-500/10 text-red-500 border border-red-500/20 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-500/20 transition-colors shadow-lg flex items-center gap-1"
+                    >
+                      <X className="w-3 h-3" /> Limpar Seleção
+                    </button>
+                  )}
+                </div>
+              </div>
               <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
                 Expanda os provedores abaixo para ativar ou desativar os modelos. Os modelos ativados ficarão disponíveis no seu menu de Especialistas na tela principal.
               </p>
