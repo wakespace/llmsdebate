@@ -26,24 +26,15 @@ export async function POST(req: NextRequest) {
     if (model.includes("gemini") || model.includes("gemma")) {
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) throw new Error("GEMINI_API_KEY não configurada");
-      
+
+      const modelId = model.startsWith("models/") ? model.replace("models/", "") : model.startsWith("gemini/") ? model.replace("gemini/", "") : model;
       const isGemma = model.includes("gemma");
-      const modelId = model.startsWith("models/") ? model.replace("models/", "") : 
-                       model.startsWith("gemini/") ? model.replace("gemini/", "") : model;
 
       const userContent = messages.find(m => m.role === 'user')?.content || "";
-
+      
       const payload: any = {
-        contents: isGemma 
-          ? [
-              { role: "user", parts: [{ text: `[INSTRUÇÕES DO SISTEMA/JUIZ]\n${systemPrompt}` }] },
-              { role: "model", parts: [{ text: "Entendido. Vou seguir essas instruções como juiz." }] },
-              { role: "user", parts: [{ text: userContent }] }
-            ]
-          : [{ role: "user", parts: [{ text: userContent }] }]
+        contents: [{ role: "user", parts: [{ text: isGemma ? `[INSTRUÇÕES DO SISTEMA/JUÍZ]\n${systemPrompt}\n\n[PROMPT]\n${userContent}` : userContent }] }]
       };
-
-      // Only add systemInstruction for non-Gemma models
       if (!isGemma) {
         payload.systemInstruction = { parts: [{ text: systemPrompt }] };
       }
