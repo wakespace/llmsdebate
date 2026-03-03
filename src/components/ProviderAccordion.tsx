@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Gavel } from "lucide-react";
 import { useDeliberationStore } from "@/store/useDeliberationStore";
 
 interface ModelData {
@@ -27,7 +27,7 @@ export function ProviderAccordion({
   const [isOpen, setIsOpen] = useState(false);
   const [expandedModelId, setExpandedModelId] = useState<string | null>(null);
   
-  const { activeModelsIds, toggleActiveModel } = useDeliberationStore();
+  const { activeModelsIds, toggleActiveModel, judgeModelsIds, toggleJudgeModel } = useDeliberationStore();
 
   const activeCount = models.filter(m => activeModelsIds.includes(m.id)).length;
 
@@ -100,22 +100,38 @@ export function ProviderAccordion({
                       </div>
                     </div>
                     
-                    <div className="flex flex-col items-end shrink-0 ml-3 gap-2">
-                       {/* Cost Tier Visualizer */}
-                       <span className={`text-[11px] px-2 py-0.5 rounded font-mono font-medium tracking-widest ${
-                         model.free 
-                           ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 line-through decoration-emerald-500/50' 
-                           : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
-                       }`}>
-                         {model.free ? '0' : (
-                           model.costTier === 'barato' ? '$' : 
-                           model.costTier === 'moderado' ? '$$' : '$$$'
-                         )}
-                       </span>
+                     <div className="flex flex-col items-end shrink-0 ml-3 gap-2">
+                       <div className="flex items-center gap-2">
+                         {/* Toggle Judge Visualizer */}
+                         <button
+                           onClick={(e) => { e.stopPropagation(); toggleJudgeModel(model.id); }}
+                           title={judgeModelsIds.includes(model.id) ? "Remover de Juiz da Síntese" : "Definir como Juiz da Síntese"}
+                           className={`p-1.5 rounded-md transition-all border ${
+                             judgeModelsIds.includes(model.id)
+                               ? 'bg-amber-500/20 text-amber-500 border-amber-500/30 hover:bg-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                               : 'bg-white/5 text-zinc-500 border-transparent hover:bg-white/10 hover:text-zinc-300'
+                           }`}
+                         >
+                           <Gavel className="w-4 h-4" />
+                         </button>
+
+                         {/* Cost Tier Visualizer */}
+                         <span className={`text-[11px] px-2 py-0.5 rounded font-mono font-medium tracking-widest h-[26px] flex items-center ${
+                           model.free 
+                             ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 line-through decoration-emerald-500/50' 
+                             : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                         }`}>
+                           {model.free ? '0' : (
+                             model.costTier === 'barato' ? '$' : 
+                             model.costTier === 'moderado' ? '$$' : '$$$'
+                           )}
+                         </span>
+                       </div>
+                       
                        <div className="p-1 text-zinc-600 group-hover:text-zinc-400 transition-colors">
                          {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                        </div>
-                    </div>
+                     </div>
                   </div>
                 </div>
 

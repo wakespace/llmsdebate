@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { ALL_MODELS, isDefaultJudge } from '@/lib/models';
 
 export const DEFAULT_SYSTEM_PROMPT = "Você é um especialista participando num Sistema de Deliberação Assistida por LLMs. Responda SEMPRE em Português do Brasil. IMPORTANTE: Estruture a sua resposta usando EXATAMENTE duas marcações Markdown: '## Análise' e '## Conclusão Final'. Seja claro, estruturado e profissional.";
 
@@ -91,6 +92,8 @@ interface State {
   isSynthesisModalOpen: boolean;
   pendingSynthesisModelId: string | null;
   activeModelsIds: string[];
+  judgeModelsIds: string[];
+  hasSeededJudgeModels: boolean;
   isSettingsOpen: boolean; // Controls Settings sidebar
   isConfirmModalOpen: boolean;
   pendingSystemPrompt: string;
@@ -113,6 +116,7 @@ interface State {
   setRoundPrompt: (prompt: string) => void;
   toggleModel: (modelId: string) => void;
   toggleActiveModel: (modelId: string) => void;
+  toggleJudgeModel: (modelId: string) => void;
   setSummarizationEnabled: (enabled: boolean) => void;
   startDeliberation: (draftSystemPrompt?: string) => void;
   startNextRound: (draftSystemPrompt?: string) => void;
@@ -171,6 +175,8 @@ export const useDeliberationStore = create<State>()(
       
       isSynthesisModalOpen: false,
       pendingSynthesisModelId: null,
+      judgeModelsIds: [],
+      hasSeededJudgeModels: false,
       isSettingsOpen: false,
       isConfirmModalOpen: false,
       pendingSystemPrompt: '',
@@ -208,6 +214,13 @@ export const useDeliberationStore = create<State>()(
         // If we disabled a model, make sure it's removed from the current selection too
         const newSelected = state.selectedModels.filter(id => id !== modelId || active.includes(modelId));
         return { activeModelsIds: active, selectedModels: newSelected };
+      }),
+
+      toggleJudgeModel: (modelId) => set((state) => {
+        const judges = state.judgeModelsIds.includes(modelId)
+          ? state.judgeModelsIds.filter(id => id !== modelId)
+          : [...state.judgeModelsIds, modelId];
+        return { judgeModelsIds: judges };
       }),
 
       setSummarizationEnabled: (enabled) => set({ summarizationEnabled: enabled }),
@@ -474,6 +487,8 @@ export const useDeliberationStore = create<State>()(
         responses: state.responses,
         selectedModels: state.selectedModels,
         activeModelsIds: state.activeModelsIds,
+        judgeModelsIds: state.judgeModelsIds,
+        hasSeededJudgeModels: state.hasSeededJudgeModels,
         summarizationEnabled: state.summarizationEnabled,
         synthesisResult: state.synthesisResult,
         fullTranscriptResult: state.fullTranscriptResult,
@@ -493,7 +508,7 @@ export const useDeliberationStore = create<State>()(
           if (state.status === 'deliberating' || state.status === 'loading') {
             useDeliberationStore.setState({ status: 'idle', columnStatus: {} });
           }
-          if (!state.hasSeededPersonas) {
+           if (!state.hasSeededPersonas) {
              const missingPersonas = DEFAULT_PERSONAS.filter(
                dp => !state.personas.some(p => p.id === dp.id)
              );
@@ -501,6 +516,14 @@ export const useDeliberationStore = create<State>()(
                 hasSeededPersonas: true,
                 personas: [...state.personas, ...missingPersonas],
                 activePersonasIds: [...new Set([...state.activePersonasIds, ...missingPersonas.map(p => p.id)])]
+             });
+          }
+
+          if (!state.hasSeededJudgeModels) {
+             const defaultJudges = ALL_MODELS.filter(isDefaultJudge).map(m => m.id);
+             useDeliberationStore.setState({
+               hasSeededJudgeModels: true,
+               judgeModelsIds: [...new Set([...state.judgeModelsIds, ...defaultJudges])]
              });
           }
 

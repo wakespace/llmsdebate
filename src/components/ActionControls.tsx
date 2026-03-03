@@ -7,7 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { ALL_MODELS } from "@/lib/models";
 
 export function ActionControls() {
-  const { status, round, responses, selectedModels, startNextRound, endWithFullTranscript, synthesisResult, fullTranscriptResult, clearSynthesis, clearFullTranscript, selectedResponseIds, selectAllResponses, clearResponseSelection, isJudging, openSynthesisModal } = useDeliberationStore();
+  const { status, round, responses, selectedModels, startNextRound, endWithFullTranscript, synthesisResult, fullTranscriptResult, clearSynthesis, clearFullTranscript, selectedResponseIds, selectAllResponses, clearResponseSelection, isJudging, openSynthesisModal, judgeModelsIds } = useDeliberationStore();
   const [synthesisModel, setSynthesisModel] = useState<string>("");
   const [copied, setCopied] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -201,15 +201,7 @@ export function ActionControls() {
             className="bg-black/20 border border-white/10 text-zinc-300 text-sm rounded-xl px-4 py-3 focus:ring-white/30 focus:border-white/30 outline-none max-w-[220px] shadow-inner disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed backdrop-blur-md"
           >
             <option value="" disabled>Sintetizar com...</option>
-            {ALL_MODELS.filter(m => {
-              const id = m.id.toLowerCase();
-              const isFree = m.free === true;
-              const hasImmenseContext = (m.contextLength ?? 0) >= 1000000;
-              const isThinking = id.includes('thinking') || m.name.toLowerCase().includes('thinking') || m.strengths.some(s => s.toLowerCase().includes('thinking') || s.toLowerCase().includes('pensamento')) || id.includes('reasoning') || id.startsWith('o1') || id.startsWith('o3');
-              const isHeavyweight = id.includes('gemini-3.1-pro') || id.includes('gemini-3-pro') || id.includes('gemini-2.5-pro') || id.includes('gpt-5.2-pro') || id.includes('gpt-5-pro') || id.includes('gpt-5.2') || id.includes('gpt-4o') || id.includes('gpt-4-turbo') || id.includes('hermes-3-405b') || id.includes('llama-3.3-70b') || id.includes('qwen3-next-80b') || id.includes('trinity-large');
-              
-              return isFree || hasImmenseContext || isThinking || isHeavyweight;
-            }).map(m => (
+            {ALL_MODELS.filter(m => judgeModelsIds.includes(m.id)).map(m => (
               <option key={m.id} value={m.id}>{m.name}</option>
             ))}
           </select>
